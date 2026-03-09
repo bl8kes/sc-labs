@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SC Labs — SoundCloud Prototype Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ─── TOKENS ───────────────────────────────────────────────────────────── */
+:root {
+  --orange: #FF5500;
+  --orange-dim: rgba(255,85,0,0.12);
+
+  /* dark */
+  --bg:       #0a0a0a;
+  --surface:  #111111;
+  --surface2: #1a1a1a;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --text:     #ffffff;
+  --text-sec: #888888;
+  --text-ter: #555555;
+  --card-bg:  #111111;
+  --card-hover: #161616;
+  --thumb-bg: #1a1a1a;
+  --input-bg: #161616;
+  --tag-bg:   rgba(255,255,255,0.06);
+  --tag-text: #888888;
+  --nav-bg:   rgba(10,10,10,0.94);
+  --shadow:   0 4px 32px rgba(0,0,0,0.5);
+}
+
+[data-theme="light"] {
+  --bg:       #f2f2f2;
+  --surface:  #ffffff;
+  --surface2: #ebebeb;
+  --border:   rgba(0,0,0,0.08);
+  --border2:  rgba(0,0,0,0.14);
+  --text:     #0a0a0a;
+  --text-sec: #666666;
+  --text-ter: #aaaaaa;
+  --card-bg:  #ffffff;
+  --card-hover: #f7f7f7;
+  --thumb-bg: #e8e8e8;
+  --input-bg: #ebebeb;
+  --tag-bg:   rgba(0,0,0,0.05);
+  --tag-text: #666666;
+  --nav-bg:   rgba(242,242,242,0.94);
+  --shadow:   0 4px 32px rgba(0,0,0,0.10);
+}
+
+/* ─── RESET ────────────────────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+  transition: background 0.25s, color 0.25s;
+}
+
+/* ─── NAV ──────────────────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 48px;
+  height: 60px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 3px;
+  color: var(--text);
+  text-transform: uppercase;
+  text-decoration: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+  margin-right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  flex-shrink: 0;
+}
+
+.nav-links a {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-sec);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--text); }
+.nav-links a.active { color: var(--orange); }
+
+.nav-search {
+  flex: 1;
+  max-width: 320px;
+  margin: 0 32px;
+  position: relative;
+}
+
+.nav-search svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-ter);
+  pointer-events: none;
+}
+
+.nav-search input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 12px 7px 34px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.nav-search input::placeholder { color: var(--text-ter); }
+.nav-search input:focus { border-color: var(--border2); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--input-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-sec);
+  transition: color 0.2s, border-color 0.2s, background 0.25s;
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--border2); }
+.theme-toggle .icon-sun  { display: none; }
+.theme-toggle .icon-moon { display: block; }
+[data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+.btn-submit {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.btn-submit:hover { opacity: 0.85; }
+
+/* ─── MAIN LAYOUT ──────────────────────────────────────────────────────── */
+.page-wrap {
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+/* ─── PAGE HEADER ──────────────────────────────────────────────────────── */
+.page-header {
+  padding: 56px 48px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-header-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 24px;
+}
+
+.page-header-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: clamp(40px, 7vw, 80px);
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.page-header-meta {
+  font-size: 13px;
+  color: var(--text-sec);
+  text-align: right;
+  line-height: 1.6;
+}
+
+.page-header-meta strong {
+  font-size: 28px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  color: var(--orange);
+  display: block;
+  line-height: 1;
+}
+
+/* ─── TABS ─────────────────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  padding: 16px 24px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+  margin-bottom: -1px;
+}
+.tab:hover { color: var(--text); }
+.tab.active {
+  color: var(--orange);
+  border-bottom-color: var(--orange);
+}
+
+/* ─── TOOLBAR ──────────────────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 48px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.toolbar-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0;
+  color: var(--text-ter);
+  margin-right: 4px;
+}
+
+select.filter-select {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-sec);
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color 0.2s, color 0.2s;
+}
+select.filter-select:focus,
+select.filter-select:hover {
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+.toolbar-spacer { flex: 1; }
+
+.result-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text-ter);
+}
+
+.view-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.view-btn {
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-ter);
+  transition: background 0.2s, color 0.2s;
+}
+.view-btn:hover { color: var(--text-sec); }
+.view-btn.active {
+  background: var(--orange-dim);
+  color: var(--orange);
+}
+.view-btn + .view-btn {
+  border-left: 1px solid var(--border);
+}
+
+/* ─── GRID VIEW ────────────────────────────────────────────────────────── */
+.projects-wrap {
+  padding: 32px 48px 80px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.project-card {
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.project-card:hover { background: var(--card-hover); }
+
+.card-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--thumb-bg);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.project-card:hover .card-thumb img { transform: scale(1.03); }
+
+.card-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 48px;
+  letter-spacing: -2px;
+  color: rgba(255,255,255,0.04);
+  text-transform: uppercase;
+  user-select: none;
+}
+[data-theme="light"] .card-thumb-placeholder {
+  color: rgba(0,0,0,0.06);
+}
+
+.card-thumb-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.card-tag {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.card-tag.orange {
+  background: var(--orange);
+  color: #fff;
+}
+
+.card-body {
+  padding: 20px 24px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-category {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.card-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--text-sec);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  gap: 8px;
+}
+
+.card-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.card-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.card-author-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-sec);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--text-ter);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── LIST VIEW ────────────────────────────────────────────────────────── */
+.projects-list {
+  display: none;
+  flex-direction: column;
+}
+
+.list-item {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 0;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.list-item:first-child { border-top: 1px solid var(--border); }
+.list-item:hover { background: var(--card-hover); }
+
+.list-thumb {
+  width: 160px;
+  aspect-ratio: 16/9;
+  background: var(--thumb-bg);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  align-self: stretch;
+}
+.list-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.list-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  color: rgba(255,255,255,0.04);
+  text-transform: uppercase;
+}
+[data-theme="light"] .list-thumb-placeholder {
+  color: rgba(0,0,0,0.06);
+}
+
+.list-body {
+  padding: 20px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.list-category {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.list-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: -0.2px;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.list-desc {
+  font-size: 13px;
+  color: var(--text-sec);
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border: 1px solid var(--border);
+}
+
+.list-meta {
+  padding: 20px 28px 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-width: 160px;
+}
+
+.list-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.list-author-name {
+  font-size: 12px;
+  color: var(--text-sec);
+}
+
+.list-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--text-ter);
+}
+
+/* ─── ACTIVE VIEW STATES ───────────────────────────────────────────────── */
+.view-grid .projects-grid { display: grid; }
+.view-grid .projects-list { display: none; }
+.view-list .projects-grid { display: none; }
+.view-list .projects-list { display: flex; }
+
+/* ─── EMPTY STATE ──────────────────────────────────────────────────────── */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 48px;
+  text-align: center;
+  gap: 16px;
+}
+.empty-state.visible { display: flex; }
+
+.empty-icon {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 80px;
+  color: var(--border2);
+  letter-spacing: -4px;
+  text-transform: uppercase;
+}
+
+.empty-state h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-sec);
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: var(--text-ter);
+}
+
+/* ─── FOOTER ───────────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+  text-decoration: none;
+}
+
+.footer-copy {
+  font-size: 11px;
+  color: var(--text-ter);
+  letter-spacing: 0.5px;
+}
+
+/* ─── SUBMIT MODAL ─────────────────────────────────────────────────────── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-backdrop.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-sec);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s;
+}
+.modal-close:hover { color: var(--text); border-color: var(--border2); }
+
+.modal-body { padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+.field-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-sec);
+}
+
+.field input,
+.field textarea,
+.field select {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.field input:focus,
+.field textarea:focus,
+.field select:focus { border-color: var(--orange); }
+.field input::placeholder,
+.field textarea::placeholder { color: var(--text-ter); }
+.field textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
+.field select { appearance: none; cursor: pointer; }
+
+.modal-footer {
+  padding: 20px 28px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-cancel {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: none;
+  color: var(--text-sec);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-cancel:hover { color: var(--text); border-color: var(--border2); }
+
+.submit-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 28px;
+  gap: 12px;
+  text-align: center;
+}
+.submit-success.visible { display: flex; }
+.submit-success-icon {
+  font-size: 40px;
+  color: var(--orange);
+}
+.submit-success h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.submit-success p { font-size: 14px; color: var(--text-sec); }
+
+.field-required { color: var(--orange); font-size: 12px; }
+.field-optional { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--text-ter); }
+.field-hint { font-size: 11px; color: #e05; min-height: 14px; display: block; }
+.field input.field-error,
+.field textarea.field-error { border-color: #e05 !important; }
+
+/* Tags input */
+.tags-input-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: text;
+  transition: border-color 0.2s;
+}
+.tags-input-wrap:focus-within { border-color: var(--orange); }
+.tags-input-wrap #f-tags {
+  border: none;
+  background: none;
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  flex: 1;
+  min-width: 120px;
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 8px 3px 10px;
+  border-radius: 2px;
+  background: var(--orange-dim);
+  color: var(--orange);
+  border: 1px solid rgba(255,85,0,0.25);
+  white-space: nowrap;
+}
+.tag-chip button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--orange);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.tag-chip button:hover { opacity: 1; }
+
+/* Collaborators */
+.collab-input-row {
+  display: flex;
+  gap: 8px;
+}
+.collab-input-row input {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.collab-input-row input:focus { border-color: var(--orange); }
+.collab-input-row input::placeholder { color: var(--text-ter); }
+.btn-add-collab {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--surface2);
+  color: var(--text-sec);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-add-collab:hover { color: var(--text); border-color: var(--border2); }
+
+#collab-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.collab-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+.collab-name { flex: 1; font-size: 13px; color: var(--text); }
+.collab-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-ter);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  transition: color 0.15s;
+}
+.collab-remove:hover { color: var(--text-sec); }
+
+/* Card tags pills */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+.card-pill {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-ter);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 7px;
+}
+
+/* Card edit button */
+.card-edit-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 28px;
+  height: 28px;
+  background: rgba(0,0,0,0.72);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.project-card:hover .card-edit-btn { opacity: 1; }
+.card-added {
+  font-size: 10px;
+  color: var(--text-ter);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Generate description */
+.desc-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.btn-generate {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  color: var(--orange);
+  background: none;
+  border: 1px solid rgba(255,85,0,0.4);
+  border-radius: 3px;
+  padding: 3px 9px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.btn-generate:hover { opacity: 0.75; }
+.btn-generate:disabled { opacity: 0.35; cursor: default; }
+
+/* ─── SCROLLBAR ────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ─── RESPONSIVE ───────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  nav { padding: 0 24px; }
+  .page-header { padding: 40px 24px 0; }
+  .toolbar { padding: 16px 24px; }
+  .projects-wrap { padding: 24px 24px 64px; }
+  footer { padding: 24px; }
+  .nav-links { display: none; }
+  .list-item { grid-template-columns: 120px 1fr; }
+  .list-meta { display: none; }
+}
+
+@media (max-width: 600px) {
+  .page-header-top { flex-direction: column; align-items: flex-start; }
+  .page-header-meta { text-align: left; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .nav-search { max-width: 160px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────────────────────── -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M7 6H17V8H16V10.6407C16.2119 10.8904 16.4506 11.1549 16.711 11.4408C16.7533 11.4872 16.7962 11.5342 16.8395 11.5817C17.1522 11.9244 17.4887 12.2933 17.8138 12.674C18.5455 13.531 19.3018 14.54 19.7032 15.6635C19.8862 16.1755 20 16.7228 20 17.2984C20 19.895 17.895 22 15.2984 22H8.70156C6.10496 22 4 19.895 4 17.2984C4 16.7228 4.11383 16.1755 4.29675 15.6635C4.69821 14.54 5.45453 13.531 6.18619 12.674C6.51126 12.2933 6.84777 11.9244 7.16044 11.5817C7.20378 11.5342 7.24665 11.4872 7.28897 11.4408C7.5494 11.1549 7.78811 10.8904 8 10.6407V8H7V6ZM10 8V11.3508L9.78087 11.6247C9.47431 12.0079 9.11903 12.4017 8.76744 12.7877C8.72393 12.8354 8.68042 12.8831 8.63695 12.9308C8.32229 13.2757 8.00937 13.6188 7.70721 13.9727C7.50789 14.2061 7.32002 14.4368 7.14694 14.6651C7.91001 14.5636 8.78427 14.4806 9.52666 14.5004C10.6623 14.5306 11.5266 14.8027 12.2733 15.0377L12.3001 15.0461C13.052 15.2827 13.6853 15.4779 14.5267 15.5004C15.2705 15.5202 16.2626 15.4072 17.1081 15.2782C17.1621 15.27 17.2152 15.2617 17.2674 15.2534C16.9969 14.8343 16.6648 14.4084 16.2928 13.9727C15.9906 13.6188 15.6777 13.2758 15.3631 12.9308C15.3196 12.8831 15.2761 12.8354 15.2326 12.7877C14.881 12.4017 14.5257 12.0079 14.2191 11.6247L14 11.3508V8H10Z" fill="currentColor"/>
+      <path d="M11 4C11 4.55228 10.5523 5 10 5C9.44772 5 9 4.55228 9 4C9 3.44772 9.44772 3 10 3C10.5523 3 11 3.44772 11 4Z" fill="currentColor"/>
+      <path d="M15 2.5C15 3.32843 14.3284 4 13.5 4C12.6716 4 12 3.32843 12 2.5C12 1.67157 12.6716 1 13.5 1C14.3284 1 15 1.67157 15 2.5Z" fill="currentColor"/>
+    </svg>
+    SC Labs
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#" class="active">Directory</a></li>
+    <li><a href="viewer.html?title=SC+Design+Flow&url=https%3A%2F%2Fsc-design-flow.vercel.app%2F" target="_blank">Workflow</a></li>
+    <li><a href="#">Guidelines</a></li>
+    <li><a href="#">Team</a></li>
+    <li><a href="#">Submit</a></li>
+  </ul>
+
+  <div class="nav-search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="globalSearch" placeholder="Search prototypes…" autocomplete="off">
+  </div>
+
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle light/dark mode">
+      <!-- Moon -->
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <!-- Sun -->
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+    <button class="btn-submit" id="openSubmit">+ Submit</button>
+  </div>
+</nav>
+
+<!-- ─── PAGE WRAP ─────────────────────────────────────────────────────────── -->
+<div class="page-wrap">
+
+  <!-- ─── PAGE HEADER ─────────────────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header-top">
+      <h1 class="page-header-title">SoundCloud Labs</h1>
+      <div class="page-header-meta">
+        <strong id="projectCount">12</strong>
+        Prototypes &amp; experiments<br>by the SC team
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" id="tabBar">
+      <button class="tab active" data-tab="all">All</button>
+      <button class="tab" data-tab="ai">AI</button>
+      <button class="tab" data-tab="discovery">Discovery</button>
+      <button class="tab" data-tab="creator">Creator</button>
+      <button class="tab" data-tab="player">Player</button>
+      <button class="tab" data-tab="monetization">Monetization</button>
+      <button class="tab" data-tab="growth">Growth</button>
+      <button class="tab" data-tab="workflow">Workflow</button>
+    </div>
+  </div>
+
+  <!-- ─── TOOLBAR ──────────────────────────────────────────────────────── -->
+  <div class="toolbar">
+    <span class="toolbar-label">Filter</span>
+
+    <select class="filter-select" id="sortSelect">
+      <option value="latest">Latest</option>
+      <option value="oldest">Oldest</option>
+      <option value="alpha">A → Z</option>
+    </select>
+
+    <select class="filter-select" id="authorSelect">
+      <option value="all">All Authors</option>
+      <option value="stephen">Stephen Blake</option>
+      <option value="maya">Maya Torres</option>
+      <option value="james">James Okonkwo</option>
+      <option value="sara">Sara Kim</option>
+      <option value="luca">Luca Mancini</option>
+    </select>
+
+    <select class="filter-select" id="statusSelect">
+      <option value="all">All Status</option>
+      <option value="wip">In Progress</option>
+      <option value="review">In Review</option>
+      <option value="shipped">Shipped</option>
+    </select>
+
+    <div class="toolbar-spacer"></div>
+
+    <span class="result-count" id="resultCount">12 results</span>
+
+    <div class="view-toggle">
+      <button class="view-btn active" id="viewGrid" title="Grid view">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+      </button>
+      <button class="view-btn" id="viewList" title="List view">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── PROJECTS ──────────────────────────────────────────────────────── -->
+  <div class="projects-wrap view-grid" id="projectsWrap">
+
+    <!-- GRID -->
+    <div class="projects-grid" id="projectsGrid"></div>
+
+    <!-- LIST -->
+    <div class="projects-list" id="projectsList"></div>
+
+    <!-- EMPTY -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">0</div>
+      <h3>No results found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+<footer>
+  <a class="footer-logo" href="#">SC / Labs</a>
+  <span class="footer-copy">SoundCloud Internal — Not for distribution</span>
+</footer>
+
+<!-- ─── SUBMIT / EDIT MODAL ────────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="submitModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Submit a Prototype</span>
+      <button class="modal-close" id="closeModal" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <form id="submitForm" novalidate>
+      <div class="modal-body">
+
+        <div class="field">
+          <label class="field-label" for="f-name">Project Title <span class="field-required">*</span></label>
+          <input id="f-name" type="text" placeholder="e.g. Sonic Match" autocomplete="off">
+          <span class="field-hint"></span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="f-link">Project URL <span class="field-required">*</span></label>
+          <input id="f-link" type="url" placeholder="https://…" autocomplete="off">
+          <span class="field-hint"></span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="f-category">Category <span class="field-required">*</span></label>
+          <select id="f-category">
+            <option value="">— Select a category —</option>
+            <option value="ai">AI</option>
+            <option value="discovery">Discovery</option>
+            <option value="creator">Creator</option>
+            <option value="player">Player</option>
+            <option value="monetization">Monetization</option>
+            <option value="growth">Growth</option>
+            <option value="workflow">Workflow</option>
+          </select>
+          <span class="field-hint"></span>
+        </div>
+
+        <div class="field">
+          <div class="desc-label-row">
+            <label class="field-label" for="f-desc">Description <span class="field-optional">— optional</span></label>
+            <button type="button" class="btn-generate" id="generateDescBtn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+              Generate with AI
+            </button>
+          </div>
+          <textarea id="f-desc" placeholder="Describe what this prototype does…" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="f-author">Your Name <span class="field-required">*</span></label>
+          <input id="f-author" type="text" placeholder="First Last" autocomplete="off">
+          <span class="field-hint"></span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="f-tags">Tags <span class="field-optional">— press Enter or comma to add</span></label>
+          <div class="tags-input-wrap" id="tags-wrap">
+            <input id="f-tags" type="text" placeholder="e.g. AI, UX, Audio…" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Collaborators <span class="field-optional">— optional</span></label>
+          <div class="collab-input-row">
+            <input id="f-collab" type="text" placeholder="Add a collaborator's name…" autocomplete="off">
+            <button type="button" id="add-collab" class="btn-add-collab">Add</button>
+          </div>
+          <div id="collab-list"></div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="cancelModal">Cancel</button>
+        <button type="submit" class="btn-submit" id="submitBtn">Submit Project</button>
+      </div>
+    </form>
+
+    <div class="submit-success" id="submitSuccess">
+      <div class="submit-success-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3 id="successTitle">Prototype Submitted</h3>
+      <p id="successMsg">Your project has been added to the directory.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── DATA & LOGIC ──────────────────────────────────────────────────────── -->
+<script>
+
+// ── Project data ──────────────────────────────────────────────────────────
+const SEED_PROJECTS = [
+  {
+    id: 1,
+    title: "Sonic Match",
+    category: "ai",
+    categoryLabel: "AI",
+    desc: "ML-powered track similarity engine that surfaces contextually related content based on audio features and listening behaviour.",
+    author: "stephen",
+    authorLabel: "Stephen Blake",
+    date: "2026-03-07",
+    dateLabel: "Mar 7, 2026",
+    status: "wip",
+    statusLabel: "In Progress",
+    tags: ["ML", "Audio", "Recommendation"],
+    thumb: null,
+    thumbCode: "SM",
+    thumbColor: "#FF5500",
+    link: "https://example.com"
+  },
+  {
+    id: 2,
+    title: "Wave Canvas",
+    category: "creator",
+    categoryLabel: "Creator",
+    desc: "Interactive waveform editor for artists — annotate, loop, and highlight key moments directly in the track timeline.",
+    author: "maya",
+    authorLabel: "Maya Torres",
+    date: "2026-03-05",
+    dateLabel: "Mar 5, 2026",
+    status: "review",
+    statusLabel: "In Review",
+    tags: ["Waveform", "Editor", "Canvas"],
+    thumb: null,
+    thumbCode: "WC",
+    thumbColor: "#7B4FFF"
+  },
+  {
+    id: 3,
+    title: "Feed Rerank",
+    category: "discovery",
+    categoryLabel: "Discovery",
+    desc: "Real-time personalised feed reranking using implicit signals — plays, skips, replays — to improve stream relevance.",
+    author: "james",
+    authorLabel: "James Okonkwo",
+    date: "2026-02-28",
+    dateLabel: "Feb 28, 2026",
+    status: "shipped",
+    statusLabel: "Shipped",
+    tags: ["Feed", "Ranking", "Signals"],
+    thumb: null,
+    thumbCode: "FR",
+    thumbColor: "#00C9A7"
+  },
+  {
+    id: 4,
+    title: "Mini Player 2",
+    category: "player",
+    categoryLabel: "Player",
+    desc: "Redesigned mini player with gesture controls, queue management, and a persistent listening context across page navigation.",
+    author: "sara",
+    authorLabel: "Sara Kim",
+    date: "2026-02-20",
+    dateLabel: "Feb 20, 2026",
+    status: "wip",
+    statusLabel: "In Progress",
+    tags: ["Player", "Gestures", "UX"],
+    thumb: null,
+    thumbCode: "MP",
+    thumbColor: "#FF3366"
+  },
+  {
+    id: 5,
+    title: "Creator Pulse",
+    category: "creator",
+    categoryLabel: "Creator",
+    desc: "Real-time analytics dashboard for artists — streaming metrics, audience geography, and track performance heatmaps.",
+    author: "luca",
+    authorLabel: "Luca Mancini",
+    date: "2026-02-14",
+    dateLabel: "Feb 14, 2026",
+    status: "review",
+    statusLabel: "In Review",
+    tags: ["Analytics", "Dashboard"],
+    thumb: null,
+    thumbCode: "CP",
+    thumbColor: "#FFB800"
+  },
+  {
+    id: 6,
+    title: "Mood Radio",
+    category: "ai",
+    categoryLabel: "AI",
+    desc: "Generative radio stations built around emotional context — input a mood or moment and get a curated, evolving stream.",
+    author: "stephen",
+    authorLabel: "Stephen Blake",
+    date: "2026-02-10",
+    dateLabel: "Feb 10, 2026",
+    status: "wip",
+    statusLabel: "In Progress",
+    tags: ["Generative", "Radio", "LLM"],
+    thumb: null,
+    thumbCode: "MR",
+    thumbColor: "#FF5500"
+  },
+  {
+    id: 7,
+    title: "Tip Jar",
+    category: "monetization",
+    categoryLabel: "Monetization",
+    desc: "Frictionless in-stream micro-tipping flow for fans to support artists — no sign-up required for casual listeners.",
+    author: "maya",
+    authorLabel: "Maya Torres",
+    date: "2026-01-30",
+    dateLabel: "Jan 30, 2026",
+    status: "review",
+    statusLabel: "In Review",
+    tags: ["Payments", "Monetization"],
+    thumb: null,
+    thumbCode: "TJ",
+    thumbColor: "#00C9A7"
+  },
+  {
+    id: 8,
+    title: "Onboard Flow v3",
+    category: "growth",
+    categoryLabel: "Growth",
+    desc: "Rethought onboarding with genre taste-mapping, artist-first seeding, and a single-session activation loop.",
+    author: "james",
+    authorLabel: "James Okonkwo",
+    date: "2026-01-22",
+    dateLabel: "Jan 22, 2026",
+    status: "shipped",
+    statusLabel: "Shipped",
+    tags: ["Onboarding", "Activation"],
+    thumb: null,
+    thumbCode: "OF",
+    thumbColor: "#7B4FFF"
+  },
+  {
+    id: 9,
+    title: "Caption Gen",
+    category: "ai",
+    categoryLabel: "AI",
+    desc: "Auto-generated track descriptions and social captions using audio analysis and artist metadata — one click, ready to post.",
+    author: "sara",
+    authorLabel: "Sara Kim",
+    date: "2026-01-15",
+    dateLabel: "Jan 15, 2026",
+    status: "wip",
+    statusLabel: "In Progress",
+    tags: ["Generative", "Captions", "NLP"],
+    thumb: null,
+    thumbCode: "CG",
+    thumbColor: "#FF3366"
+  },
+  {
+    id: 10,
+    title: "Social Layer",
+    category: "discovery",
+    categoryLabel: "Discovery",
+    desc: "Friend activity feed and collaborative playlisting — see what your network is playing and add to shared queues in real time.",
+    author: "luca",
+    authorLabel: "Luca Mancini",
+    date: "2026-01-08",
+    dateLabel: "Jan 8, 2026",
+    status: "shipped",
+    statusLabel: "Shipped",
+    tags: ["Social", "Feed", "Playlists"],
+    thumb: null,
+    thumbCode: "SL",
+    thumbColor: "#FFB800"
+  },
+  {
+    id: 11,
+    title: "Stem Split",
+    category: "creator",
+    categoryLabel: "Creator",
+    desc: "Browser-based stem separation tool — upload any track and isolate vocals, drums, bass, and melody for remix or sampling.",
+    author: "stephen",
+    authorLabel: "Stephen Blake",
+    date: "2025-12-18",
+    dateLabel: "Dec 18, 2025",
+    status: "wip",
+    statusLabel: "In Progress",
+    tags: ["Audio", "ML", "Remix"],
+    thumb: null,
+    thumbCode: "SS",
+    thumbColor: "#FF5500"
+  },
+  {
+    id: 12,
+    title: "Sub Perks",
+    category: "monetization",
+    categoryLabel: "Monetization",
+    desc: "Premium subscriber perk system — exclusive early listens, behind-the-scenes content, and direct artist interactions.",
+    author: "maya",
+    authorLabel: "Maya Torres",
+    date: "2025-12-05",
+    dateLabel: "Dec 5, 2025",
+    status: "review",
+    statusLabel: "In Review",
+    tags: ["Subscription", "Perks"],
+    thumb: null,
+    thumbCode: "SP",
+    thumbColor: "#7B4FFF"
+  },
+  {
+    id: 13,
+    title: "SC Design Flow",
+    category: "workflow",
+    categoryLabel: "Workflow",
+    desc: "Internal design workflow tool — a living reference for SC's design system, component library, and team process documentation.",
+    author: "stephen",
+    authorLabel: "Stephen Blake",
+    date: "2026-03-09",
+    dateLabel: "Mar 9, 2026",
+    status: "shipped",
+    statusLabel: "Shipped",
+    tags: ["Design System", "Workflow", "Components"],
+    thumb: null,
+    thumbCode: "DF",
+    thumbColor: "#FF5500",
+    link: "https://sc-design-flow.vercel.app/",
+    addedAt: "2026-03-09T00:00:00.000Z"
+  }
+];
+
+// ── Persistence ────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'sc-labs-projects';
+
+function loadProjects() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return null;
+}
+
+function saveProjects() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(PROJECTS)); } catch(e) {}
+}
+
+// Merge: saved user-added projects first, then seed projects not already present
+const _saved = loadProjects();
+const PROJECTS = _saved
+  ? [
+      ..._saved.filter(p => !SEED_PROJECTS.find(s => s.id === p.id)),  // user-added
+      ...SEED_PROJECTS.map(s => { const override = _saved.find(x => x.id === s.id); return override || s; }) // seed (possibly edited)
+    ]
+  : [...SEED_PROJECTS];
+
+// ── State ──────────────────────────────────────────────────────────────────
+let activeTab    = 'all';
+let sortBy       = 'latest';
+let filterAuthor = 'all';
+let filterStatus = 'all';
+let searchQuery  = '';
+let currentView  = 'grid';
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function avatarInitials(name) {
+  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function avatarColor(author) {
+  const colors = {
+    stephen: '#FF5500',
+    maya:    '#7B4FFF',
+    james:   '#00C9A7',
+    sara:    '#FF3366',
+    luca:    '#FFB800'
+  };
+  return colors[author] || '#888';
+}
+
+function statusDot(status) {
+  const map = { wip: '#FFB800', review: '#7B4FFF', shipped: '#00C9A7' };
+  return map[status] || '#888';
+}
+
+function filtered() {
+  let list = [...PROJECTS];
+
+  if (activeTab !== 'all') list = list.filter(p => p.category === activeTab);
+  if (filterAuthor !== 'all') list = list.filter(p => p.author === filterAuthor);
+  if (filterStatus !== 'all') list = list.filter(p => p.status === filterStatus);
+
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q) ||
+      p.categoryLabel.toLowerCase().includes(q) ||
+      p.authorLabel.toLowerCase().includes(q) ||
+      p.tags.some(t => t.toLowerCase().includes(q))
+    );
+  }
+
+  if (sortBy === 'latest') list.sort((a, b) => b.date.localeCompare(a.date));
+  else if (sortBy === 'oldest') list.sort((a, b) => a.date.localeCompare(b.date));
+  else if (sortBy === 'alpha') list.sort((a, b) => a.title.localeCompare(b.title));
+
+  return list;
+}
+
+// ── Render card ────────────────────────────────────────────────────────────
+function cardHTML(p) {
+  const thumbBg = p.thumbColor + '18';
+  const img = p.thumb
+    ? `<img src="${p.thumb}" alt="${p.title}" onerror="this.style.display='none'">`
+    : `<div class="card-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}20">${p.thumbCode}</div>`;
+
+  const statusColor = statusDot(p.status);
+  const tagsHTML = p.tags && p.tags.length
+    ? `<div class="card-tags">${p.tags.map(t => `<span class="card-pill">${t}</span>`).join('')}</div>`
+    : '';
+  const addedLabel = p.addedAt
+    ? 'Added ' + new Date(p.addedAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+    : p.dateLabel;
+
+  return `
+    <div class="project-card" data-id="${p.id}" onclick="openProject(${p.id})">
+      <div class="card-thumb" style="background:${thumbBg}">
+        ${img}
+        <div class="card-thumb-overlay">
+          <span class="card-tag" style="background:${statusColor}22;color:${statusColor}">${p.statusLabel}</span>
+        </div>
+        <button class="card-edit-btn" title="Edit project" onclick="event.stopPropagation();openEditModal(${p.id})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-category">${p.categoryLabel}</div>
+        <div class="card-title">${p.title}</div>
+        <div class="card-desc">${p.desc || '<span style="color:var(--text-ter);font-style:italic">No description</span>'}</div>
+        ${tagsHTML}
+        <div class="card-footer">
+          <div class="card-author">
+            <div class="card-avatar" style="background:${avatarColor(p.author)}">${avatarInitials(p.authorLabel)}</div>
+            <span class="card-author-name">${p.authorLabel}</span>
+          </div>
+          <span class="card-added">${addedLabel}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Render list item ───────────────────────────────────────────────────────
+function listHTML(p) {
+  const thumbBg = p.thumbColor + '18';
+  const img = p.thumb
+    ? `<img src="${p.thumb}" alt="${p.title}">`
+    : `<div class="list-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}30">${p.thumbCode}</div>`;
+
+  const statusColor = statusDot(p.status);
+  const pillsHTML = p.tags.map(t => `<span class="pill">${t}</span>`).join('');
+
+  return `
+    <div class="list-item" data-id="${p.id}" onclick="openProject(${p.id})">
+      <div class="list-thumb" style="background:${thumbBg}">${img}</div>
+      <div class="list-body">
+        <div class="list-category">${p.categoryLabel}</div>
+        <div class="list-title">${p.title}</div>
+        <div class="list-desc">${p.desc}</div>
+        <div class="list-tags">${pillsHTML}</div>
+      </div>
+      <div class="list-meta">
+        <div class="list-author">
+          <div class="card-avatar" style="background:${avatarColor(p.author)};width:20px;height:20px;font-size:9px">${avatarInitials(p.authorLabel)}</div>
+          <span class="list-author-name">${p.authorLabel}</span>
+        </div>
+        <span class="list-date">${p.dateLabel}</span>
+        <span class="pill" style="color:${statusColor};border-color:${statusColor}44;background:${statusColor}14">${p.statusLabel}</span>
+      </div>
+    </div>`;
+}
+
+// ── Render all ─────────────────────────────────────────────────────────────
+function render() {
+  const list = filtered();
+
+  const grid = document.getElementById('projectsGrid');
+  const listEl = document.getElementById('projectsList');
+  const empty = document.getElementById('emptyState');
+  const countEl = document.getElementById('resultCount');
+  const headerCount = document.getElementById('projectCount');
+
+  grid.innerHTML   = list.map(cardHTML).join('');
+  listEl.innerHTML = list.map(listHTML).join('');
+
+  const n = list.length;
+  countEl.textContent  = `${n} result${n !== 1 ? 's' : ''}`;
+  headerCount.textContent = PROJECTS.length;
+
+  empty.classList.toggle('visible', n === 0);
+}
+
+// ── Open project ───────────────────────────────────────────────────────────
+function openProject(id) {
+  const p = PROJECTS.find(x => x.id === id);
+  if (!p) return;
+  const url = p.link || null;
+  if (!url) return;
+  // Build viewer URL and open in new tab
+  const viewer = `viewer.html?title=${encodeURIComponent(p.title)}&url=${encodeURIComponent(url)}`;
+  window.open(viewer, '_blank');
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+document.getElementById('tabBar').addEventListener('click', e => {
+  const btn = e.target.closest('.tab');
+  if (!btn) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  activeTab = btn.dataset.tab;
+  render();
+});
+
+// ── Filters ────────────────────────────────────────────────────────────────
+document.getElementById('sortSelect').addEventListener('change', e => {
+  sortBy = e.target.value; render();
+});
+document.getElementById('authorSelect').addEventListener('change', e => {
+  filterAuthor = e.target.value; render();
+});
+document.getElementById('statusSelect').addEventListener('change', e => {
+  filterStatus = e.target.value; render();
+});
+
+// ── Search ─────────────────────────────────────────────────────────────────
+let searchTimer;
+document.getElementById('globalSearch').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { searchQuery = e.target.value; render(); }, 150);
+});
+
+// ── View toggle ────────────────────────────────────────────────────────────
+document.getElementById('viewGrid').addEventListener('click', () => {
+  currentView = 'grid';
+  document.getElementById('projectsWrap').className = 'projects-wrap view-grid';
+  document.getElementById('viewGrid').classList.add('active');
+  document.getElementById('viewList').classList.remove('active');
+});
+document.getElementById('viewList').addEventListener('click', () => {
+  currentView = 'list';
+  document.getElementById('projectsWrap').className = 'projects-wrap view-list';
+  document.getElementById('viewList').classList.add('active');
+  document.getElementById('viewGrid').classList.remove('active');
+});
+
+// ── Theme toggle ───────────────────────────────────────────────────────────
+const html = document.documentElement;
+const saved = localStorage.getItem('sc-labs-theme') || 'dark';
+html.setAttribute('data-theme', saved);
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('sc-labs-theme', next);
+});
+
+// ── Init ───────────────────────────────────────────────────────────────────
+render();
+
+// ── Submit / Edit modal ──────────────────────────────────────────────────
+const modal   = document.getElementById('submitModal');
+const form    = document.getElementById('submitForm');
+const success = document.getElementById('submitSuccess');
+
+// Optional: add your Anthropic API key to enable AI description generation
+const CLAUDE_API_KEY = '';
+
+let modalTags  = [];
+let modalColls = [];
+let editingId  = null;   // null = new project, number = editing existing
+
+const CATEGORY_LABELS = {
+  ai: 'AI', discovery: 'Discovery', creator: 'Creator',
+  player: 'Player', monetization: 'Monetization', growth: 'Growth', workflow: 'Workflow'
+};
+
+function setError(id, msg) {
+  const el = document.getElementById(id);
+  el.classList.toggle('field-error', !!msg);
+  const hint = el.closest('.field').querySelector('.field-hint');
+  if (hint) hint.textContent = msg;
+}
+
+function openModal(projectId = null) {
+  editingId = projectId;
+  modalTags  = [];
+  modalColls = [];
+  form.style.display = '';
+  form.reset();
+  success.classList.remove('visible');
+  modal.classList.add('open');
+
+  const titleEl  = document.getElementById('modalTitle');
+  const submitEl = document.getElementById('submitBtn');
+
+  if (projectId !== null) {
+    // Edit mode — pre-fill
+    const p = PROJECTS.find(x => x.id === projectId);
+    if (!p) return;
+    titleEl.textContent  = 'Edit Prototype';
+    submitEl.textContent = 'Save Changes';
+    document.getElementById('f-name').value     = p.title;
+    document.getElementById('f-link').value     = p.link || '';
+    document.getElementById('f-category').value = p.category || '';
+    document.getElementById('f-desc').value     = p.desc || '';
+    document.getElementById('f-author').value   = p.authorLabel;
+    modalTags  = [...(p.tags || [])];
+    modalColls = [...(p.collaborators || [])];
+  } else {
+    titleEl.textContent  = 'Submit a Prototype';
+    submitEl.textContent = 'Submit Project';
+  }
+
+  ['f-name','f-link','f-category','f-author'].forEach(id => setError(id, ''));
+  renderModalTags();
+  renderModalColls();
+  document.getElementById('f-name').focus();
+}
+
+function closeModal() {
+  modal.classList.remove('open');
+  editingId = null;
+}
+
+window.openEditModal = function(id) { openModal(id); };
+
+document.getElementById('openSubmit').addEventListener('click', () => openModal(null));
+document.getElementById('closeModal').addEventListener('click', closeModal);
+document.getElementById('cancelModal').addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+// ── AI description generation ─────────────────────────────────────────────
+async function generateDesc(title, category, tags) {
+  if (!CLAUDE_API_KEY) {
+    const catLabel = CATEGORY_LABELS[category] || 'prototype';
+    const tagPart  = tags ? ` using ${tags}` : '';
+    return `A ${catLabel.toLowerCase()} prototype exploring ${title.toLowerCase()}${tagPart}. Built to test new ideas and workflows for the SoundCloud team.`;
+  }
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': CLAUDE_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+      'anthropic-dangerous-allow-browser': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 120,
+      messages: [{
+        role: 'user',
+        content: `Write a concise 1–2 sentence description for an internal SoundCloud prototype called "${title}"${category ? ` in the ${CATEGORY_LABELS[category]} category` : ''}${tags ? `, tagged: ${tags}` : ''}. Be specific and professional. No quotes, no intro phrase.`
+      }]
+    })
+  });
+  const data = await res.json();
+  return data.content?.[0]?.text?.trim() || '';
+}
+
+document.getElementById('generateDescBtn').addEventListener('click', async () => {
+  const title    = document.getElementById('f-name').value.trim();
+  const category = document.getElementById('f-category').value;
+  const btn      = document.getElementById('generateDescBtn');
+  const textarea = document.getElementById('f-desc');
+  if (!title) { document.getElementById('f-name').focus(); return; }
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+  try {
+    textarea.value = await generateDesc(title, category, modalTags.join(', '));
+  } catch(e) {
+    textarea.placeholder = 'Generation failed — write a description manually.';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Generate with AI`;
+  }
+});
+
+// ── Tags ──────────────────────────────────────────────────────────────────
+function renderModalTags() {
+  const wrap  = document.getElementById('tags-wrap');
+  const input = document.getElementById('f-tags');
+  wrap.innerHTML = '';
+  modalTags.forEach((t, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${t}<button type="button" aria-label="Remove ${t}" onclick="removeTag(${i})">×</button>`;
+    wrap.appendChild(chip);
+  });
+  wrap.appendChild(input);
+}
+
+window.removeTag = function(i) {
+  modalTags.splice(i, 1);
+  renderModalTags();
+  document.getElementById('f-tags').focus();
+};
+
+document.getElementById('f-tags').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/,$/, '');
+    if (val && !modalTags.includes(val) && modalTags.length < 8) {
+      modalTags.push(val);
+      renderModalTags();
+    }
+    e.target.value = '';
+  } else if (e.key === 'Backspace' && !e.target.value && modalTags.length) {
+    modalTags.pop();
+    renderModalTags();
+  }
+});
+
+// ── Collaborators ────────────────────────────────────────────────────────
+function renderModalColls() {
+  const list = document.getElementById('collab-list');
+  list.innerHTML = '';
+  modalColls.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'collab-row';
+    row.innerHTML = `
+      <div class="card-avatar" style="background:${['#7B4FFF','#00C9A7','#FF3366','#FFB800','#FF5500'][i%5]};width:28px;height:28px;font-size:11px;flex-shrink:0">
+        ${name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()}
+      </div>
+      <span class="collab-name">${name}</span>
+      <button type="button" class="collab-remove" aria-label="Remove" onclick="removeCollab(${i})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>`;
+    list.appendChild(row);
+  });
+}
+
+window.removeCollab = function(i) {
+  modalColls.splice(i, 1);
+  renderModalColls();
+};
+
+document.getElementById('add-collab').addEventListener('click', () => {
+  const input = document.getElementById('f-collab');
+  const val = input.value.trim();
+  if (val && !modalColls.includes(val) && modalColls.length < 10) {
+    modalColls.push(val);
+    renderModalColls();
+    input.value = '';
+  }
+  input.focus();
+});
+
+document.getElementById('f-collab').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('add-collab').click(); }
+});
+
+// ── Submit / Save ─────────────────────────────────────────────────────────
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name     = document.getElementById('f-name').value.trim();
+  const link     = document.getElementById('f-link').value.trim();
+  const category = document.getElementById('f-category').value;
+  let   desc     = document.getElementById('f-desc').value.trim();
+  const author   = document.getElementById('f-author').value.trim();
+
+  let valid = true;
+  setError('f-name',     !name     ? 'Project title is required' : '');
+  setError('f-link',     !link     ? 'Project URL is required'   : '');
+  setError('f-category', !category ? 'Please select a category'  : '');
+  setError('f-author',   !author   ? 'Your name is required'     : '');
+  if (!name)         { valid = false; document.getElementById('f-name').focus(); }
+  else if (!link)    { valid = false; document.getElementById('f-link').focus(); }
+  else if (!category){ valid = false; document.getElementById('f-category').focus(); }
+  else if (!author)  { valid = false; document.getElementById('f-author').focus(); }
+  if (!valid) return;
+
+  // Auto-generate description if blank
+  if (!desc) {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+    try { desc = await generateDesc(name, category, modalTags.join(', ')); } catch(e) {}
+    btn.disabled = false;
+    btn.textContent = editingId !== null ? 'Save Changes' : 'Submit Project';
+  }
+
+  const categoryLabel = CATEGORY_LABELS[category] || category;
+
+  if (editingId !== null) {
+    // Update existing
+    const idx = PROJECTS.findIndex(x => x.id === editingId);
+    if (idx !== -1) {
+      Object.assign(PROJECTS[idx], {
+        title: name, link, category, categoryLabel, desc,
+        author: author.split(' ')[0].toLowerCase(),
+        authorLabel: author,
+        tags: modalTags,
+        collaborators: modalColls
+      });
+    }
+    document.getElementById('successTitle').textContent = 'Changes Saved';
+    document.getElementById('successMsg').textContent   = 'The project has been updated.';
+  } else {
+    // New project
+    const now      = new Date();
+    const dateLabel = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const colors   = ['#FF5500','#7B4FFF','#00C9A7','#FF3366','#FFB800'];
+    const color    = colors[PROJECTS.length % colors.length];
+    const code     = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    // Auto-generate thumbnail from URL via screenshot service
+    const thumb    = `https://image.thum.io/get/width/600/crop/400/${encodeURIComponent(link)}`;
+
+    PROJECTS.unshift({
+      id: Date.now(),
+      title: name,
+      category, categoryLabel, desc,
+      author: author.split(' ')[0].toLowerCase(),
+      authorLabel: author,
+      collaborators: modalColls,
+      date: now.toISOString().slice(0,10),
+      dateLabel,
+      addedAt: now.toISOString(),
+      status: 'wip',
+      statusLabel: 'In Progress',
+      tags: modalTags,
+      thumb,
+      thumbCode: code,
+      thumbColor: color,
+      link
+    });
+    document.getElementById('successTitle').textContent = 'Prototype Submitted';
+    document.getElementById('successMsg').textContent   = 'Your project has been added to the directory.';
+  }
+
+  form.style.display = 'none';
+  success.classList.add('visible');
+  saveProjects();
+  document.getElementById('projectCount').textContent = PROJECTS.length;
+  setTimeout(() => { closeModal(); render(); }, 1600);
+});
+
+</script>
+
+</body>
+</html>
