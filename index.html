@@ -404,12 +404,14 @@ select.filter-select:hover {
 .project-card:hover { background: var(--card-hover); }
 
 .card-thumb {
-  width: 100%;
+  width: calc(100% - 16px);
   aspect-ratio: 16/9;
   background: var(--thumb-bg);
   overflow: hidden;
   position: relative;
   flex-shrink: 0;
+  margin: 8px auto 0;
+  border-radius: 4px;
 }
 
 .card-thumb img {
