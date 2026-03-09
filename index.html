@@ -347,8 +347,8 @@ select.filter-select:hover {
 }
 .view-btn:hover { color: var(--text-sec); }
 .view-btn.active {
-  background: var(--orange-dim);
-  color: var(--orange);
+  background: var(--border2);
+  color: var(--text);
 }
 .view-btn + .view-btn {
   border-left: 1px solid var(--border);
@@ -1100,7 +1100,6 @@ footer {
     <li><a href="viewer.html?title=SC+Design+Flow&url=https%3A%2F%2Fsc-design-flow.vercel.app%2F" target="_blank">Workflow</a></li>
     <li><a href="#">Guidelines</a></li>
     <li><a href="#">Team</a></li>
-    <li><a href="#">Submit</a></li>
   </ul>
 
   <div class="nav-search">
@@ -1783,7 +1782,7 @@ document.getElementById('viewList').addEventListener('click', () => {
 
 // ── Theme toggle ───────────────────────────────────────────────────────────
 const html = document.documentElement;
-const saved = localStorage.getItem('sc-labs-theme') || 'dark';
+const saved = localStorage.getItem('sc-labs-theme') || 'light';
 html.setAttribute('data-theme', saved);
 
 document.getElementById('themeToggle').addEventListener('click', () => {
