@@ -142,10 +142,11 @@ body {
   border: 1px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
-  color: var(--text-sec);
+  color: rgba(255,255,255,0.55);
   text-decoration: none;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
+[data-theme="light"] .bar-btn { color: rgba(0,0,0,0.45); }
 .bar-btn:hover { color: var(--text); }
 .bar-btn.active {
   background: var(--orange);
@@ -502,13 +503,13 @@ document.getElementById('drawerToggle').addEventListener('click', () => {
 
 // ── Theme ─────────────────────────────────────────────────────────────────
 const html  = document.documentElement;
-const saved = localStorage.getItem('sc-labs-theme') || 'light';
+const saved = localStorage.getItem('sc-labs-viewer-theme') || 'dark';
 html.setAttribute('data-theme', saved);
 
 document.getElementById('themeToggle').addEventListener('click', () => {
   const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', next);
-  localStorage.setItem('sc-labs-theme', next);
+  localStorage.setItem('sc-labs-viewer-theme', next);
 });
 </script>
 </body>
