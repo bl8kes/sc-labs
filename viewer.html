@@ -447,6 +447,135 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+/* ─── EDIT MODAL ─────────────────────────────────────────────────────────── */
+.edit-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+}
+.edit-backdrop.open { display: flex; }
+
+.edit-modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.edit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.edit-modal-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.edit-modal-close {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-ter); border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.edit-modal-close:hover { color: var(--text); background: var(--input-bg); }
+
+.edit-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.edit-field { display: flex; flex-direction: column; gap: 6px; }
+.edit-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-ter);
+}
+.edit-input, .edit-select, .edit-textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.edit-input:focus, .edit-select:focus, .edit-textarea:focus { border-color: var(--orange); }
+.edit-input::placeholder, .edit-textarea::placeholder { color: var(--text-ter); }
+.edit-textarea { resize: vertical; min-height: 72px; line-height: 1.55; }
+.edit-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
+.edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.edit-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.edit-btn-cancel {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-sec);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.edit-btn-cancel:hover { color: var(--text); border-color: var(--border2); }
+.edit-btn-save {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: var(--orange);
+  border: none;
+  border-radius: 6px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.edit-btn-save:hover { opacity: 0.85; }
+.edit-save-msg {
+  font-size: 12px;
+  color: #00C9A7;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s;
+  margin-right: auto;
+}
+.edit-save-msg.visible { opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -481,6 +610,13 @@ body {
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
       <span class="badge" id="commentBadge" style="display:none"></span>
+    </button>
+    <!-- Edit project -->
+    <button class="bar-btn" id="editToggle" title="Edit project">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
     </button>
     <!-- Open external -->
     <a class="bar-btn" id="openExternal" href="#" target="_blank" title="Open in new tab">
@@ -566,8 +702,77 @@ body {
   </div>
 </div>
 
+<!-- ─── EDIT MODAL ────────────────────────────────────────────────────────── -->
+<div class="edit-backdrop" id="editBackdrop">
+  <div class="edit-modal">
+    <div class="edit-modal-header">
+      <span class="edit-modal-title">Edit Project</span>
+      <button class="edit-modal-close" id="editClose">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="edit-modal-body">
+      <div class="edit-row">
+        <div class="edit-field">
+          <label class="edit-label">Title *</label>
+          <input class="edit-input" id="eTitle" type="text" placeholder="Project title">
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">URL *</label>
+          <input class="edit-input" id="eUrl" type="url" placeholder="https://…">
+        </div>
+      </div>
+      <div class="edit-row">
+        <div class="edit-field">
+          <label class="edit-label">Category</label>
+          <select class="edit-select" id="eCategory">
+            <option value="upload">Upload</option>
+            <option value="artist-success">Artist Success</option>
+            <option value="fan-monetization">Fan Monetization</option>
+            <option value="distro">Distro</option>
+            <option value="marketing">Marketing</option>
+            <option value="core">Core</option>
+          </select>
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">Status</label>
+          <select class="edit-select" id="eStatus">
+            <option value="wip">In Progress</option>
+            <option value="review">In Review</option>
+            <option value="shipped">Shipped</option>
+          </select>
+        </div>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Author</label>
+        <input class="edit-input" id="eAuthor" type="text" placeholder="Your name">
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Tags <span style="opacity:0.5;text-transform:none;font-size:10px;letter-spacing:0">(comma separated)</span></label>
+        <input class="edit-input" id="eTags" type="text" placeholder="Design, Mobile, API…">
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Short Description</label>
+        <textarea class="edit-textarea" id="eDesc" rows="2" placeholder="One-line summary…"></textarea>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Full Description</label>
+        <textarea class="edit-textarea" id="eLongDesc" rows="4" placeholder="Detailed notes, goals, outcomes…" style="min-height:100px"></textarea>
+      </div>
+    </div>
+    <div class="edit-modal-footer">
+      <span class="edit-save-msg" id="editSaveMsg">Saved!</span>
+      <button class="edit-btn-cancel" id="editCancel">Cancel</button>
+      <button class="edit-btn-save" id="editSave">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const params   = new URLSearchParams(location.search);
+const projectId = params.get('id') ? Number(params.get('id')) : null;
 const title    = params.get('title')    || 'Prototype';
 const url      = params.get('url')      || '';
 const category = params.get('category') || '';
@@ -791,6 +996,129 @@ if (url) {
   frame.style.display = 'none';
   error.classList.add('visible');
 }
+
+// ── Edit modal ────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'sc-labs-projects';
+const CATEGORY_MAP = {
+  'Upload': 'upload', 'Artist Success': 'artist-success',
+  'Fan Monetization': 'fan-monetization', 'Distro': 'distro',
+  'Marketing': 'marketing', 'Core': 'core', 'Workflow': 'workflow'
+};
+const CATEGORY_LABELS = {
+  'upload': 'Upload', 'artist-success': 'Artist Success',
+  'fan-monetization': 'Fan Monetization', 'distro': 'Distro',
+  'marketing': 'Marketing', 'core': 'Core', 'workflow': 'Workflow'
+};
+const STATUS_MAP = { 'In Progress': 'wip', 'In Review': 'review', 'Shipped': 'shipped' };
+const STATUS_LABELS = { 'wip': 'In Progress', 'review': 'In Review', 'shipped': 'Shipped' };
+
+const editBackdrop = document.getElementById('editBackdrop');
+
+document.getElementById('editToggle').addEventListener('click', () => {
+  // Populate fields from current params
+  document.getElementById('eTitle').value    = title;
+  document.getElementById('eUrl').value      = url;
+  document.getElementById('eAuthor').value   = params.get('author') || '';
+  document.getElementById('eTags').value     = (params.get('tags') || '').split(',').filter(Boolean).join(', ');
+  document.getElementById('eDesc').value     = params.get('desc') || '';
+  document.getElementById('eLongDesc').value = params.get('longDesc') || '';
+
+  const catKey = CATEGORY_MAP[params.get('category')] || 'upload';
+  document.getElementById('eCategory').value = catKey;
+
+  const statKey = STATUS_MAP[params.get('status')] || 'wip';
+  document.getElementById('eStatus').value = statKey;
+
+  document.getElementById('editSaveMsg').classList.remove('visible');
+  editBackdrop.classList.add('open');
+});
+
+function closeEditModal() { editBackdrop.classList.remove('open'); }
+document.getElementById('editClose').addEventListener('click', closeEditModal);
+document.getElementById('editCancel').addEventListener('click', closeEditModal);
+editBackdrop.addEventListener('click', e => { if (e.target === editBackdrop) closeEditModal(); });
+
+document.getElementById('editSave').addEventListener('click', () => {
+  const newTitle    = document.getElementById('eTitle').value.trim();
+  const newUrl      = document.getElementById('eUrl').value.trim();
+  if (!newTitle || !newUrl) { alert('Title and URL are required.'); return; }
+
+  const catKey      = document.getElementById('eCategory').value;
+  const statKey     = document.getElementById('eStatus').value;
+  const newAuthor   = document.getElementById('eAuthor').value.trim();
+  const newTags     = document.getElementById('eTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const newDesc     = document.getElementById('eDesc').value.trim();
+  const newLongDesc = document.getElementById('eLongDesc').value.trim();
+
+  // Update localStorage
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) {}
+
+  const idx = saved.findIndex(p => p.id === projectId);
+  const updated = {
+    id: projectId,
+    title: newTitle,
+    link: newUrl,
+    category: catKey,
+    categoryLabel: CATEGORY_LABELS[catKey] || catKey,
+    status: statKey,
+    statusLabel: STATUS_LABELS[statKey] || statKey,
+    author: newAuthor.toLowerCase().replace(/\s+/g, ''),
+    authorLabel: newAuthor,
+    desc: newDesc,
+    longDesc: newLongDesc,
+    tags: newTags,
+    thumbCode: newTitle.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
+    addedAt: new Date().toISOString()
+  };
+
+  if (idx !== -1) {
+    // Preserve fields we don't edit (thumb, thumbColor, etc.)
+    saved[idx] = { ...saved[idx], ...updated };
+  } else {
+    saved.push(updated);
+  }
+
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch(e) {}
+
+  // Update the drawer info in place
+  document.getElementById('barTitle').textContent  = newTitle;
+  document.getElementById('barUrl').textContent    = newUrl;
+  document.getElementById('drawerCategory').textContent = CATEGORY_LABELS[catKey] || catKey;
+  document.getElementById('drawerTitle').textContent    = newTitle;
+
+  // Rebuild meta
+  const metaEl = document.getElementById('drawerMeta');
+  const statColor = { 'wip': '#FFB800', 'review': '#7B4FFF', 'shipped': '#00C9A7' }[statKey] || '#888';
+  metaEl.innerHTML = `
+    <span class="drawer-status" style="background:${statColor}18;color:${statColor};border:1px solid ${statColor}44">${STATUS_LABELS[statKey]}</span>
+    ${newAuthor ? `<span class="drawer-meta-item"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> ${newAuthor}</span>` : ''}`;
+
+  // Rebuild body
+  const bodyEl = document.getElementById('drawerBody');
+  bodyEl.innerHTML = '';
+  if (newDesc) {
+    const s = document.createElement('div'); s.className = 'drawer-section';
+    s.innerHTML = `<div class="drawer-section-label">Summary</div><div class="drawer-desc">${newDesc}</div>`;
+    bodyEl.appendChild(s);
+  }
+  if (newLongDesc) {
+    const s = document.createElement('div'); s.className = 'drawer-section';
+    s.innerHTML = `<div class="drawer-section-label">Description</div><div class="drawer-longdesc">${newLongDesc}</div>`;
+    bodyEl.appendChild(s);
+  }
+  if (newTags.length) {
+    const s = document.createElement('div'); s.className = 'drawer-section';
+    s.innerHTML = `<div class="drawer-section-label">Tags</div><div class="drawer-tags">${newTags.map(t => `<span class="drawer-tag">${t}</span>`).join('')}</div>`;
+    bodyEl.appendChild(s);
+  }
+
+  // Signal parent tab to re-render if open
+  try { if (window.opener && window.opener.render) window.opener.render(); } catch(e) {}
+
+  document.getElementById('editSaveMsg').classList.add('visible');
+  setTimeout(closeEditModal, 1200);
+});
 
 // ── Theme ─────────────────────────────────────────────────────────────────
 const html  = document.documentElement;

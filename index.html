@@ -1849,6 +1849,7 @@ function openProject(id) {
   const url = p.link || null;
   if (!url) return;
   const params = new URLSearchParams({
+    id:       p.id,
     title:    p.title,
     url:      url,
     category: p.categoryLabel || '',
