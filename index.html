@@ -848,10 +848,25 @@ footer {
 .modal-footer {
   padding: 20px 28px 24px;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
   gap: 10px;
   border-top: 1px solid var(--border);
 }
+.btn-delete {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: none;
+  color: #cc2200;
+  border: 1px solid rgba(204,34,0,0.3);
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-delete:hover { background: rgba(204,34,0,0.08); border-color: rgba(204,34,0,0.6); color: #ff3300; }
 
 .btn-cancel {
   font-family: 'Inter', sans-serif;
@@ -1350,8 +1365,11 @@ footer {
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-cancel" id="cancelModal">Cancel</button>
-        <button type="submit" class="btn-submit" id="submitBtn">Submit Project</button>
+        <button type="button" class="btn-delete" id="deleteBtn" style="display:none">Delete Project</button>
+        <div style="display:flex;gap:10px;margin-left:auto">
+          <button type="button" class="btn-cancel" id="cancelModal">Cancel</button>
+          <button type="submit" class="btn-submit" id="submitBtn">Submit Project</button>
+        </div>
       </div>
     </form>
 
@@ -1912,12 +1930,15 @@ function openModal(projectId = null) {
   const titleEl  = document.getElementById('modalTitle');
   const submitEl = document.getElementById('submitBtn');
 
+  const deleteEl = document.getElementById('deleteBtn');
+
   if (projectId !== null) {
     // Edit mode — pre-fill
     const p = PROJECTS.find(x => x.id === projectId);
     if (!p) return;
     titleEl.textContent  = 'Edit Prototype';
     submitEl.textContent = 'Save Changes';
+    deleteEl.style.display = '';
     document.getElementById('f-name').value     = p.title;
     document.getElementById('f-link').value     = p.link || '';
     document.getElementById('f-category').value = p.category || '';
@@ -1929,6 +1950,7 @@ function openModal(projectId = null) {
   } else {
     titleEl.textContent  = 'Submit a Prototype';
     submitEl.textContent = 'Submit Project';
+    deleteEl.style.display = 'none';
   }
 
   ['f-name','f-link','f-category','f-author'].forEach(id => setError(id, ''));
@@ -1947,6 +1969,16 @@ window.openEditModal = function(id) { openModal(id); };
 document.getElementById('openSubmit').addEventListener('click', () => openModal(null));
 document.getElementById('closeModal').addEventListener('click', closeModal);
 document.getElementById('cancelModal').addEventListener('click', closeModal);
+
+document.getElementById('deleteBtn').addEventListener('click', () => {
+  if (editingId === null) return;
+  if (!confirm('Delete this project? This cannot be undone.')) return;
+  const idx = PROJECTS.findIndex(x => x.id === editingId);
+  if (idx !== -1) PROJECTS.splice(idx, 1);
+  saveProjects();
+  closeModal();
+  render();
+});
 modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
