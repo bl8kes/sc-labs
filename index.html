@@ -417,9 +417,25 @@ select.filter-select:hover {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
 }
+.card-thumb img.loaded { opacity: 1; }
 .project-card:hover .card-thumb img { transform: scale(1.03); }
+
+/* shimmer while screenshot loads */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.card-thumb-loading {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--thumb-bg) 25%, var(--card-hover) 50%, var(--thumb-bg) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.card-thumb img.loaded ~ .card-thumb-loading { display: none; }
 
 .card-thumb-placeholder {
   width: 100%;
@@ -1150,8 +1166,8 @@ footer {
   </a>
 
   <ul class="nav-links">
-    <li><a href="#" class="active">Directory</a></li>
-    <li><a href="viewer.html?title=SC+Design+Flow&url=https%3A%2F%2Fsc-design-flow.vercel.app%2F" target="_blank">Workflow</a></li>
+    <li><a href="#" id="navDirectory" class="active" onclick="showSection('directory');return false;">Directory</a></li>
+    <li><a href="#" id="navWorkflow" onclick="showSection('workflow');return false;">Workflow</a></li>
     <li><a href="#">Guidelines</a></li>
     <li><a href="#">Team</a></li>
   </ul>
@@ -1275,6 +1291,11 @@ footer {
 
   </div>
 
+</div>
+
+<!-- ─── WORKFLOW SECTION ───────────────────────────────────────────────── -->
+<div id="workflowSection" style="display:none;position:fixed;top:60px;left:0;right:0;bottom:0;z-index:10;">
+  <iframe id="workflowFrame" src="" style="width:100%;height:100%;border:none;display:block;" allow="fullscreen"></iframe>
 </div>
 
 <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
@@ -1711,8 +1732,9 @@ function cardHTML(p) {
   const thumbBg  = p.thumbColor + '18';
   const thumbSrc = screenshotUrl(p);
   const img = thumbSrc
-    ? `<img src="${thumbSrc}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    ? `<img src="${thumbSrc}" alt="${p.title}" onload="this.classList.add('loaded')" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';this.nextElementSibling.nextElementSibling.style.display='none'">`
       + `<div class="card-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}20;display:none">${p.thumbCode}</div>`
+      + `<div class="card-thumb-loading"></div>`
     : `<div class="card-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}20">${p.thumbCode}</div>`;
 
   const statusColor = statusDot(p.status);
@@ -1885,6 +1907,33 @@ document.getElementById('viewList').addEventListener('click', () => {
   document.getElementById('viewList').classList.add('active');
   document.getElementById('viewGrid').classList.remove('active');
 });
+
+// ── Section switcher (Directory / Workflow) ────────────────────────────────
+function showSection(section) {
+  const pageWrap = document.querySelector('.page-wrap');
+  const footer   = document.querySelector('footer');
+  const workflowSection = document.getElementById('workflowSection');
+  const workflowFrame   = document.getElementById('workflowFrame');
+  const navDirectory = document.getElementById('navDirectory');
+  const navWorkflow  = document.getElementById('navWorkflow');
+
+  if (section === 'workflow') {
+    pageWrap.style.display = 'none';
+    footer.style.display   = 'none';
+    workflowSection.style.display = 'block';
+    if (!workflowFrame.src || workflowFrame.src === window.location.href) {
+      workflowFrame.src = 'https://sc-design-flow.vercel.app/';
+    }
+    navDirectory.classList.remove('active');
+    navWorkflow.classList.add('active');
+  } else {
+    pageWrap.style.display = '';
+    footer.style.display   = '';
+    workflowSection.style.display = 'none';
+    navWorkflow.classList.remove('active');
+    navDirectory.classList.add('active');
+  }
+}
 
 // ── Theme toggle ───────────────────────────────────────────────────────────
 const html = document.documentElement;
