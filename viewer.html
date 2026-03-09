@@ -14,6 +14,7 @@
   --bg:     #0a0a0a;
   --bar-bg: rgba(10,10,10,0.96);
   --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.14);
   --text:   #ffffff;
   --text-sec: #888888;
   --text-ter: #555555;
@@ -25,6 +26,7 @@
   --bg:     #f2f2f2;
   --bar-bg: rgba(242,242,242,0.96);
   --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.16);
   --text:   #0a0a0a;
   --text-sec: #666666;
   --text-ter: #999999;
@@ -80,12 +82,7 @@ body {
 }
 .back-btn:hover { color: var(--text); }
 
-.bar-divider {
-  width: 1px;
-  height: 24px;
-  background: var(--border);
-  flex-shrink: 0;
-}
+.bar-divider { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
 
 .bar-logo {
   font-family: 'Inter', sans-serif;
@@ -125,12 +122,7 @@ body {
   flex-shrink: 0;
 }
 
-.bar-actions {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-  align-items: center;
-}
+.bar-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
 
 .bar-btn {
   width: 32px;
@@ -145,13 +137,29 @@ body {
   color: rgba(255,255,255,0.55);
   text-decoration: none;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
+  position: relative;
 }
 [data-theme="light"] .bar-btn { color: rgba(0,0,0,0.45); }
 .bar-btn:hover { color: var(--text); }
-.bar-btn.active {
+.bar-btn.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+/* comment badge */
+.bar-btn .badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 14px;
+  height: 14px;
   background: var(--orange);
-  border-color: var(--orange);
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: 800;
   color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
 }
 
 .theme-toggle .icon-sun  { display: none; }
@@ -160,20 +168,9 @@ body {
 [data-theme="light"] .theme-toggle .icon-moon { display: none; }
 
 /* ─── MAIN LAYOUT ───────────────────────────────────────────────────────── */
-.viewer-body {
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-}
+.viewer-body { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-/* ─── IFRAME ─────────────────────────────────────────────────────────────── */
-.viewer-frame {
-  flex: 1;
-  border: none;
-  display: block;
-  min-width: 0;
-}
+.viewer-frame { flex: 1; border: none; display: block; min-width: 0; }
 
 /* ─── DRAWER ─────────────────────────────────────────────────────────────── */
 .viewer-drawer {
@@ -191,106 +188,220 @@ body {
 .drawer-inner {
   width: 360px;
   height: 100%;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-.drawer-header {
-  padding: 24px 24px 16px;
+/* ─── DRAWER TABS ─────────────────────────────────────────────────────────── */
+.drawer-tabs {
+  display: flex;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
+.drawer-tab {
+  flex: 1;
+  padding: 14px 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-ter);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.drawer-tab:hover { color: var(--text-sec); }
+.drawer-tab.active { color: var(--text); border-bottom-color: var(--orange); }
 
+/* ─── TAB PANELS ──────────────────────────────────────────────────────────── */
+.drawer-panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.drawer-panel.active { display: flex; }
+
+/* INFO PANEL */
+.drawer-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+.drawer-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
 .drawer-category {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--orange);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
-
 .drawer-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.3px;
   color: var(--text);
   line-height: 1.2;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
+.drawer-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.drawer-meta-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-sec); }
+.drawer-status { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 3px; }
+.drawer-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+.drawer-section { display: flex; flex-direction: column; gap: 8px; }
+.drawer-section-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-ter); }
+.drawer-desc { font-size: 13px; color: var(--text-sec); line-height: 1.65; }
+.drawer-longdesc { font-size: 13px; color: var(--text-sec); line-height: 1.8; white-space: pre-wrap; }
+.drawer-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.drawer-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; color: var(--text-ter); background: var(--input-bg); border: 1px solid var(--border); border-radius: 3px; padding: 3px 8px; }
 
-.drawer-meta {
+/* COMMENTS PANEL */
+.comments-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.comment-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  color: var(--text-ter);
+  font-size: 12px;
+  text-align: center;
+  padding: 40px 20px;
+}
+.comment-empty svg { opacity: 0.3; }
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.comment-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
-
-.drawer-meta-item {
+.comment-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--orange);
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: var(--text-sec);
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
 }
-
-.drawer-status {
-  font-size: 10px;
+.comment-name {
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 3px 8px;
-  border-radius: 3px;
-}
-
-.drawer-body {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  color: var(--text);
   flex: 1;
 }
-
-.drawer-section { display: flex; flex-direction: column; gap: 8px; }
-
-.drawer-section-label {
+.comment-time {
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
   color: var(--text-ter);
+  white-space: nowrap;
 }
-
-.drawer-desc {
+.comment-body {
   font-size: 13px;
   color: var(--text-sec);
-  line-height: 1.65;
+  line-height: 1.6;
+  padding-left: 32px;
 }
-
-.drawer-longdesc {
-  font-size: 13px;
-  color: var(--text-sec);
-  line-height: 1.8;
-  white-space: pre-wrap;
+.comment-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-ter);
+  font-size: 11px;
+  padding: 0;
+  padding-left: 32px;
+  text-align: left;
+  display: none;
+  transition: color 0.15s;
 }
+.comment:hover .comment-delete { display: block; }
+.comment-delete:hover { color: #e05; }
 
-.drawer-tags {
+.comments-input-wrap {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding: 14px 20px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column;
+  gap: 10px;
 }
-
-.drawer-tag {
-  font-size: 10px;
+.comments-name-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.comments-name-row input {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  color: var(--text-ter);
+  color: var(--text);
   background: var(--input-bg);
   border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 3px 8px;
+  border-radius: 4px;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color 0.2s;
 }
+.comments-name-row input:focus { border-color: var(--border2); }
+.comments-name-row input::placeholder { color: var(--text-ter); }
+.comment-textarea {
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  outline: none;
+  resize: none;
+  min-height: 72px;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+}
+.comment-textarea:focus { border-color: var(--orange); }
+.comment-textarea::placeholder { color: var(--text-ter); }
+.comment-submit {
+  align-self: flex-end;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.comment-submit:hover { opacity: 0.85; }
 
 /* ─── ERROR STATE ─────────────────────────────────────────────────────────── */
 .viewer-error {
@@ -305,28 +416,13 @@ body {
   padding: 48px;
 }
 .viewer-error.visible { display: flex; }
-.viewer-error h2 {
-  font-size: 20px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text);
-}
+.viewer-error h2 { font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
 .viewer-error p { font-size: 14px; line-height: 1.6; max-width: 400px; }
 .viewer-error a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--orange);
-  border-radius: 4px;
-  padding: 10px 20px;
-  text-decoration: none;
-  transition: opacity 0.2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  color: #fff; background: var(--orange); border-radius: 4px; padding: 10px 20px;
+  text-decoration: none; transition: opacity 0.2s;
 }
 .viewer-error a:hover { opacity: 0.85; }
 
@@ -347,29 +443,36 @@ body {
   </button>
 
   <div class="bar-divider"></div>
-
   <a class="bar-logo" href="index.html"><span>SC</span> Labs</a>
-
   <div class="bar-divider"></div>
 
   <span class="bar-title" id="barTitle">—</span>
-
   <span class="bar-url" id="barUrl">—</span>
 
   <div class="bar-actions">
-    <button class="bar-btn" id="drawerToggle" title="Project details">
+    <!-- Info -->
+    <button class="bar-btn" id="infoToggle" title="Project info">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <line x1="12" y1="8" x2="12" y2="8" stroke-width="3" stroke-linecap="round"/>
         <line x1="12" y1="12" x2="12" y2="17"/>
       </svg>
     </button>
+    <!-- Comments -->
+    <button class="bar-btn" id="commentsToggle" title="Comments">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span class="badge" id="commentBadge" style="display:none"></span>
+    </button>
+    <!-- Open external -->
     <a class="bar-btn" id="openExternal" href="#" target="_blank" title="Open in new tab">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
         <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
       </svg>
     </a>
+    <!-- Theme -->
     <button class="bar-btn theme-toggle" id="themeToggle" title="Toggle theme">
       <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -397,14 +500,46 @@ body {
     <a id="errorLink" href="#" target="_blank">Open in new tab ↗</a>
   </div>
 
+  <!-- ─── DRAWER ──────────────────────────────────────────────────────────── -->
   <div class="viewer-drawer" id="viewerDrawer">
     <div class="drawer-inner">
-      <div class="drawer-header">
-        <div class="drawer-category" id="drawerCategory"></div>
-        <div class="drawer-title" id="drawerTitle"></div>
-        <div class="drawer-meta" id="drawerMeta"></div>
+
+      <!-- Tabs -->
+      <div class="drawer-tabs">
+        <button class="drawer-tab active" data-panel="info">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8" stroke-width="3"/><line x1="12" y1="12" x2="12" y2="17"/></svg>
+          Info
+        </button>
+        <button class="drawer-tab" data-panel="comments">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Comments <span id="tabCommentCount" style="opacity:0.5"></span>
+        </button>
       </div>
-      <div class="drawer-body" id="drawerBody"></div>
+
+      <!-- Info panel -->
+      <div class="drawer-panel active" id="panelInfo">
+        <div class="drawer-scroll">
+          <div class="drawer-header">
+            <div class="drawer-category" id="drawerCategory"></div>
+            <div class="drawer-title" id="drawerTitle"></div>
+            <div class="drawer-meta" id="drawerMeta"></div>
+          </div>
+          <div class="drawer-body" id="drawerBody"></div>
+        </div>
+      </div>
+
+      <!-- Comments panel -->
+      <div class="drawer-panel" id="panelComments">
+        <div class="comments-list" id="commentsList"></div>
+        <div class="comments-input-wrap">
+          <div class="comments-name-row">
+            <input type="text" id="commentName" placeholder="Your name…" autocomplete="off" maxlength="40">
+          </div>
+          <textarea class="comment-textarea" id="commentText" placeholder="Leave a comment…" rows="3"></textarea>
+          <button class="comment-submit" id="commentSubmit">Post</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -421,13 +556,16 @@ const tagsRaw  = params.get('tags')     || '';
 const desc     = params.get('desc')     || '';
 const longDesc = params.get('longDesc') || '';
 
+// Storage key scoped to this project
+const projectKey  = 'sc-labs-comments-' + btoa(encodeURIComponent(url || title)).slice(0, 32);
+
 document.title = `${title} — SC Labs`;
 document.getElementById('barTitle').textContent = title;
 document.getElementById('barUrl').textContent   = url;
 document.getElementById('openExternal').href    = url;
 document.getElementById('errorLink').href       = url;
 
-// ── Drawer content ────────────────────────────────────────────────────────
+// ── Info panel content ────────────────────────────────────────────────────
 document.getElementById('drawerCategory').textContent = category;
 document.getElementById('drawerTitle').textContent    = title;
 
@@ -456,7 +594,6 @@ if (date) {
 }
 
 const bodyEl = document.getElementById('drawerBody');
-
 if (desc) {
   const sec = document.createElement('div');
   sec.className = 'drawer-section';
@@ -479,6 +616,133 @@ if (tagsRaw) {
   }
 }
 
+// ── Comments ──────────────────────────────────────────────────────────────
+function loadComments() {
+  try { return JSON.parse(localStorage.getItem(projectKey)) || []; } catch(e) { return []; }
+}
+function saveComments(list) {
+  try { localStorage.setItem(projectKey, JSON.stringify(list)); } catch(e) {}
+}
+
+function timeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1)  return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  if (d < 7)  return `${d}d ago`;
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function avatarColor(name) {
+  const colors = ['#FF5500','#7B4FFF','#00C9A7','#FF3366','#FFB800'];
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % colors.length;
+  return colors[h];
+}
+
+function initials(name) {
+  return name.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function renderComments() {
+  const list    = loadComments();
+  const listEl  = document.getElementById('commentsList');
+  const badge   = document.getElementById('commentBadge');
+  const tabCount = document.getElementById('tabCommentCount');
+
+  // badge on toolbar button
+  if (list.length > 0) {
+    badge.textContent = list.length;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+  tabCount.textContent = list.length > 0 ? `(${list.length})` : '';
+
+  if (list.length === 0) {
+    listEl.innerHTML = `
+      <div class="comment-empty">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>No comments yet.<br>Be the first to leave feedback.</span>
+      </div>`;
+    return;
+  }
+
+  listEl.innerHTML = list.map((c, i) => `
+    <div class="comment">
+      <div class="comment-header">
+        <div class="comment-avatar" style="background:${avatarColor(c.name)}">${initials(c.name)}</div>
+        <span class="comment-name">${c.name}</span>
+        <span class="comment-time">${timeAgo(c.ts)}</span>
+      </div>
+      <div class="comment-body">${c.text}</div>
+      <button class="comment-delete" onclick="deleteComment(${i})">Delete</button>
+    </div>`).join('');
+}
+
+window.deleteComment = function(i) {
+  const list = loadComments();
+  list.splice(i, 1);
+  saveComments(list);
+  renderComments();
+};
+
+document.getElementById('commentSubmit').addEventListener('click', () => {
+  const name = document.getElementById('commentName').value.trim();
+  const text = document.getElementById('commentText').value.trim();
+  if (!name || !text) return;
+  const list = loadComments();
+  list.push({ name, text, ts: new Date().toISOString() });
+  saveComments(list);
+  document.getElementById('commentText').value = '';
+  renderComments();
+  // scroll to bottom
+  const listEl = document.getElementById('commentsList');
+  listEl.scrollTop = listEl.scrollHeight;
+});
+
+document.getElementById('commentText').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    e.preventDefault();
+    document.getElementById('commentSubmit').click();
+  }
+});
+
+renderComments();
+
+// ── Drawer & tab logic ────────────────────────────────────────────────────
+const drawer = document.getElementById('viewerDrawer');
+
+function openDrawer(panel) {
+  drawer.classList.add('open');
+  document.querySelectorAll('.drawer-tab').forEach(t => t.classList.toggle('active', t.dataset.panel === panel));
+  document.querySelectorAll('.drawer-panel').forEach(p => p.classList.toggle('active', p.id === 'panel' + panel.charAt(0).toUpperCase() + panel.slice(1)));
+  document.getElementById('infoToggle').classList.toggle('active', panel === 'info');
+  document.getElementById('commentsToggle').classList.toggle('active', panel === 'comments');
+}
+
+function toggleDrawer(panel) {
+  const isOpen   = drawer.classList.contains('open');
+  const activeTab = document.querySelector('.drawer-tab.active')?.dataset.panel;
+  if (isOpen && activeTab === panel) {
+    drawer.classList.remove('open');
+    document.getElementById('infoToggle').classList.remove('active');
+    document.getElementById('commentsToggle').classList.remove('active');
+  } else {
+    openDrawer(panel);
+  }
+}
+
+document.getElementById('infoToggle').addEventListener('click', () => toggleDrawer('info'));
+document.getElementById('commentsToggle').addEventListener('click', () => toggleDrawer('comments'));
+
+document.querySelectorAll('.drawer-tab').forEach(tab => {
+  tab.addEventListener('click', () => openDrawer(tab.dataset.panel));
+});
+
 // ── Iframe ────────────────────────────────────────────────────────────────
 const frame = document.getElementById('viewerFrame');
 const error = document.getElementById('viewerError');
@@ -494,12 +758,6 @@ if (url) {
   frame.style.display = 'none';
   error.classList.add('visible');
 }
-
-// ── Drawer toggle ─────────────────────────────────────────────────────────
-document.getElementById('drawerToggle').addEventListener('click', () => {
-  const open = document.getElementById('viewerDrawer').classList.toggle('open');
-  document.getElementById('drawerToggle').classList.toggle('active', open);
-});
 
 // ── Theme ─────────────────────────────────────────────────────────────────
 const html  = document.documentElement;
