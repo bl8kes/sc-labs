@@ -1724,7 +1724,7 @@ function filtered() {
 // ── Render card ────────────────────────────────────────────────────────────
 function screenshotUrl(p) {
   if (p.thumb) return p.thumb;
-  if (p.link)  return `https://image.thum.io/get/width/600/crop/400/${encodeURIComponent(p.link)}`;
+  if (p.link)  return `https://s.wordpress.com/mshots/v1/${encodeURIComponent(p.link)}?w=600&h=400`;
   return null;
 }
 
@@ -2216,7 +2216,7 @@ form.addEventListener('submit', async e => {
     const color    = colors[PROJECTS.length % colors.length];
     const code     = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     // Auto-generate thumbnail from URL via screenshot service
-    const thumb    = `https://image.thum.io/get/width/600/crop/400/${encodeURIComponent(link)}`;
+    const thumb    = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(link)}?w=600&h=400`;
 
     PROJECTS.unshift({
       id: Date.now(),
