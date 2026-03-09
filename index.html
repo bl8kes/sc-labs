@@ -1701,10 +1701,17 @@ function filtered() {
 }
 
 // ── Render card ────────────────────────────────────────────────────────────
+function screenshotUrl(p) {
+  if (p.thumb) return p.thumb;
+  if (p.link)  return `https://image.thum.io/get/width/600/crop/400/${encodeURIComponent(p.link)}`;
+  return null;
+}
+
 function cardHTML(p) {
-  const thumbBg = p.thumbColor + '18';
-  const img = p.thumb
-    ? `<img src="${p.thumb}" alt="${p.title}" onerror="this.style.display='none'">`
+  const thumbBg  = p.thumbColor + '18';
+  const thumbSrc = screenshotUrl(p);
+  const img = thumbSrc
+    ? `<img src="${thumbSrc}" alt="${p.title}" onerror="this.parentElement.innerHTML='<div class=\\'card-thumb-placeholder\\' style=\\'background:${thumbBg};color:${p.thumbColor}20\\'>${p.thumbCode}</div>'">`
     : `<div class="card-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}20">${p.thumbCode}</div>`;
 
   const statusColor = statusDot(p.status);
@@ -1760,9 +1767,10 @@ function cardHTML(p) {
 
 // ── Render list item ───────────────────────────────────────────────────────
 function listHTML(p) {
-  const thumbBg = p.thumbColor + '18';
-  const img = p.thumb
-    ? `<img src="${p.thumb}" alt="${p.title}">`
+  const thumbBg  = p.thumbColor + '18';
+  const thumbSrc = screenshotUrl(p);
+  const img = thumbSrc
+    ? `<img src="${thumbSrc}" alt="${p.title}" onerror="this.parentElement.innerHTML='<div class=\\'list-thumb-placeholder\\' style=\\'background:${thumbBg};color:${p.thumbColor}30\\'>${p.thumbCode}</div>'">`
     : `<div class="list-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}30">${p.thumbCode}</div>`;
 
   const statusColor = statusDot(p.status);
