@@ -23,9 +23,9 @@
   --text:     #ffffff;
   --text-sec: #888888;
   --text-ter: #555555;
-  --card-bg:  #111111;
-  --card-hover: #161616;
-  --thumb-bg: #1a1a1a;
+  --card-bg:  #1a1a1a;
+  --card-hover: #212121;
+  --thumb-bg: #242424;
   --input-bg: #161616;
   --tag-bg:   rgba(255,255,255,0.06);
   --tag-text: #888888;
@@ -1026,6 +1026,18 @@ footer {
   border: 1px solid var(--border);
   border-radius: 3px;
   padding: 2px 7px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.card-pill:hover { color: var(--text-sec); border-color: var(--border2); }
+.card-pill.active { color: var(--orange); border-color: rgba(255,85,0,0.4); background: rgba(255,85,0,0.08); }
+.card-comment-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-ter);
 }
 
 /* Card edit button */
@@ -1617,6 +1629,7 @@ let sortBy       = 'latest';
 let filterAuthor = 'all';
 let filterStatus = 'all';
 let searchQuery  = '';
+let filterTag    = '';
 let currentView  = 'grid';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -1647,14 +1660,18 @@ function filtered() {
   if (filterAuthor !== 'all') list = list.filter(p => p.author === filterAuthor);
   if (filterStatus !== 'all') list = list.filter(p => p.status === filterStatus);
 
+  if (filterTag) {
+    list = list.filter(p => p.tags && p.tags.some(t => t.toLowerCase() === filterTag.toLowerCase()));
+  }
+
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
     list = list.filter(p =>
       p.title.toLowerCase().includes(q) ||
-      p.desc.toLowerCase().includes(q) ||
+      (p.desc || '').toLowerCase().includes(q) ||
       p.categoryLabel.toLowerCase().includes(q) ||
       p.authorLabel.toLowerCase().includes(q) ||
-      p.tags.some(t => t.toLowerCase().includes(q))
+      (p.tags || []).some(t => t.toLowerCase().includes(q))
     );
   }
 
@@ -1673,12 +1690,25 @@ function cardHTML(p) {
     : `<div class="card-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}20">${p.thumbCode}</div>`;
 
   const statusColor = statusDot(p.status);
+
   const tagsHTML = p.tags && p.tags.length
-    ? `<div class="card-tags">${p.tags.map(t => `<span class="card-pill">${t}</span>`).join('')}</div>`
+    ? `<div class="card-tags">${p.tags.map(t => {
+        const active = filterTag.toLowerCase() === t.toLowerCase();
+        return `<span class="card-pill${active ? ' active' : ''}" onclick="event.stopPropagation();setTagFilter('${t.replace(/'/g,"\\'")}');">${t}</span>`;
+      }).join('')}</div>`
     : '';
+
   const addedLabel = p.addedAt
     ? 'Added ' + new Date(p.addedAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
     : p.dateLabel;
+
+  // Comment count from localStorage
+  const commentKey = 'sc-labs-comments-' + btoa(encodeURIComponent(p.link || p.title)).slice(0, 32);
+  let commentCount = 0;
+  try { commentCount = (JSON.parse(localStorage.getItem(commentKey)) || []).length; } catch(e) {}
+  const commentBadge = commentCount > 0
+    ? `<span class="card-comment-count"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${commentCount}</span>`
+    : '';
 
   return `
     <div class="project-card" data-id="${p.id}" onclick="openProject(${p.id})">
@@ -1701,7 +1731,10 @@ function cardHTML(p) {
             <div class="card-avatar" style="background:${avatarColor(p.author)}">${avatarInitials(p.authorLabel)}</div>
             <span class="card-author-name">${p.authorLabel}</span>
           </div>
-          <span class="card-added">${addedLabel}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            ${commentBadge}
+            <span class="card-added">${addedLabel}</span>
+          </div>
         </div>
       </div>
     </div>`;
@@ -1797,6 +1830,12 @@ document.getElementById('authorSelect').addEventListener('change', e => {
 document.getElementById('statusSelect').addEventListener('change', e => {
   filterStatus = e.target.value; render();
 });
+
+// ── Tag filter ─────────────────────────────────────────────────────────────
+window.setTagFilter = function(tag) {
+  filterTag = (filterTag.toLowerCase() === tag.toLowerCase()) ? '' : tag;
+  render();
+};
 
 // ── Search ─────────────────────────────────────────────────────────────────
 let searchTimer;
