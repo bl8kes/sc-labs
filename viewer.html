@@ -198,7 +198,24 @@ body {
   display: flex;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  align-items: center;
 }
+.drawer-close {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-ter);
+  margin-right: 6px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.drawer-close:hover { color: var(--text); background: var(--input-bg); }
 .drawer-tab {
   flex: 1;
   padding: 14px 0;
@@ -514,6 +531,11 @@ body {
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Comments <span id="tabCommentCount" style="opacity:0.5"></span>
         </button>
+        <button class="drawer-close" id="drawerClose" title="Close">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
 
       <!-- Info panel -->
@@ -742,6 +764,17 @@ document.getElementById('commentsToggle').addEventListener('click', () => toggle
 document.querySelectorAll('.drawer-tab').forEach(tab => {
   tab.addEventListener('click', () => openDrawer(tab.dataset.panel));
 });
+
+function closeDrawer() {
+  drawer.classList.remove('open');
+  document.getElementById('infoToggle').classList.remove('active');
+  document.getElementById('commentsToggle').classList.remove('active');
+}
+
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+
+// Open info drawer by default
+openDrawer('info');
 
 // ── Iframe ────────────────────────────────────────────────────────────────
 const frame = document.getElementById('viewerFrame');

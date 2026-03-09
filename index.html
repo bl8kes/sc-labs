@@ -1711,7 +1711,8 @@ function cardHTML(p) {
   const thumbBg  = p.thumbColor + '18';
   const thumbSrc = screenshotUrl(p);
   const img = thumbSrc
-    ? `<img src="${thumbSrc}" alt="${p.title}" onerror="this.parentElement.innerHTML='<div class=\\'card-thumb-placeholder\\' style=\\'background:${thumbBg};color:${p.thumbColor}20\\'>${p.thumbCode}</div>'">`
+    ? `<img src="${thumbSrc}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      + `<div class="card-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}20;display:none">${p.thumbCode}</div>`
     : `<div class="card-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}20">${p.thumbCode}</div>`;
 
   const statusColor = statusDot(p.status);
@@ -1770,7 +1771,8 @@ function listHTML(p) {
   const thumbBg  = p.thumbColor + '18';
   const thumbSrc = screenshotUrl(p);
   const img = thumbSrc
-    ? `<img src="${thumbSrc}" alt="${p.title}" onerror="this.parentElement.innerHTML='<div class=\\'list-thumb-placeholder\\' style=\\'background:${thumbBg};color:${p.thumbColor}30\\'>${p.thumbCode}</div>'">`
+    ? `<img src="${thumbSrc}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      + `<div class="list-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}30;display:none">${p.thumbCode}</div>`
     : `<div class="list-thumb-placeholder" style="background:${thumbBg};color:${p.thumbColor}30">${p.thumbCode}</div>`;
 
   const statusColor = statusDot(p.status);
