@@ -1148,13 +1148,12 @@ footer {
     <!-- TABS -->
     <div class="tabs" id="tabBar">
       <button class="tab active" data-tab="all">All</button>
-      <button class="tab" data-tab="ai">AI</button>
-      <button class="tab" data-tab="discovery">Discovery</button>
-      <button class="tab" data-tab="creator">Creator</button>
-      <button class="tab" data-tab="player">Player</button>
-      <button class="tab" data-tab="monetization">Monetization</button>
-      <button class="tab" data-tab="growth">Growth</button>
-      <button class="tab" data-tab="workflow">Workflow</button>
+      <button class="tab" data-tab="upload">Upload</button>
+      <button class="tab" data-tab="artist-success">Artist Success</button>
+      <button class="tab" data-tab="fan-monetization">Fan Monetization</button>
+      <button class="tab" data-tab="distro">Distro</button>
+      <button class="tab" data-tab="marketing">Marketing</button>
+      <button class="tab" data-tab="core">Core</button>
     </div>
   </div>
 
@@ -1262,26 +1261,30 @@ footer {
           <label class="field-label" for="f-category">Category <span class="field-required">*</span></label>
           <select id="f-category">
             <option value="">— Select a category —</option>
-            <option value="ai">AI</option>
-            <option value="discovery">Discovery</option>
-            <option value="creator">Creator</option>
-            <option value="player">Player</option>
-            <option value="monetization">Monetization</option>
-            <option value="growth">Growth</option>
-            <option value="workflow">Workflow</option>
+            <option value="upload">Upload</option>
+            <option value="artist-success">Artist Success</option>
+            <option value="fan-monetization">Fan Monetization</option>
+            <option value="distro">Distro</option>
+            <option value="marketing">Marketing</option>
+            <option value="core">Core</option>
           </select>
           <span class="field-hint"></span>
         </div>
 
         <div class="field">
           <div class="desc-label-row">
-            <label class="field-label" for="f-desc">Description <span class="field-optional">— optional</span></label>
+            <label class="field-label" for="f-desc">Short Description <span class="field-optional">— shown on card</span></label>
             <button type="button" class="btn-generate" id="generateDescBtn">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
               Generate with AI
             </button>
           </div>
-          <textarea id="f-desc" placeholder="Describe what this prototype does…" rows="3"></textarea>
+          <textarea id="f-desc" placeholder="1–2 sentence summary…" rows="2"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="f-longdesc">Full Description <span class="field-optional">— shown in project drawer</span></label>
+          <textarea id="f-longdesc" placeholder="Goals, context, how it works, open questions, next steps…" rows="5"></textarea>
         </div>
 
         <div class="field">
@@ -1733,9 +1736,18 @@ function openProject(id) {
   if (!p) return;
   const url = p.link || null;
   if (!url) return;
-  // Build viewer URL and open in new tab
-  const viewer = `viewer.html?title=${encodeURIComponent(p.title)}&url=${encodeURIComponent(url)}`;
-  window.open(viewer, '_blank');
+  const params = new URLSearchParams({
+    title:    p.title,
+    url:      url,
+    category: p.categoryLabel || '',
+    author:   p.authorLabel   || '',
+    date:     p.dateLabel     || '',
+    status:   p.statusLabel   || '',
+    tags:     (p.tags || []).join(','),
+    desc:     p.desc          || '',
+    longDesc: p.longDesc      || ''
+  });
+  window.open(`viewer.html?${params}`, '_blank');
 }
 
 // ── Tabs ───────────────────────────────────────────────────────────────────
@@ -1807,8 +1819,12 @@ let modalColls = [];
 let editingId  = null;   // null = new project, number = editing existing
 
 const CATEGORY_LABELS = {
-  ai: 'AI', discovery: 'Discovery', creator: 'Creator',
-  player: 'Player', monetization: 'Monetization', growth: 'Growth', workflow: 'Workflow'
+  upload: 'Upload',
+  'artist-success': 'Artist Success',
+  'fan-monetization': 'Fan Monetization',
+  distro: 'Distro',
+  marketing: 'Marketing',
+  core: 'Core'
 };
 
 function setError(id, msg) {
@@ -1840,6 +1856,7 @@ function openModal(projectId = null) {
     document.getElementById('f-link').value     = p.link || '';
     document.getElementById('f-category').value = p.category || '';
     document.getElementById('f-desc').value     = p.desc || '';
+    document.getElementById('f-longdesc').value = p.longDesc || '';
     document.getElementById('f-author').value   = p.authorLabel;
     modalTags  = [...(p.tags || [])];
     modalColls = [...(p.collaborators || [])];
@@ -1994,6 +2011,7 @@ form.addEventListener('submit', async e => {
   const link     = document.getElementById('f-link').value.trim();
   const category = document.getElementById('f-category').value;
   let   desc     = document.getElementById('f-desc').value.trim();
+  const longDesc = document.getElementById('f-longdesc').value.trim();
   const author   = document.getElementById('f-author').value.trim();
 
   let valid = true;
@@ -2024,7 +2042,7 @@ form.addEventListener('submit', async e => {
     const idx = PROJECTS.findIndex(x => x.id === editingId);
     if (idx !== -1) {
       Object.assign(PROJECTS[idx], {
-        title: name, link, category, categoryLabel, desc,
+        title: name, link, category, categoryLabel, desc, longDesc,
         author: author.split(' ')[0].toLowerCase(),
         authorLabel: author,
         tags: modalTags,
@@ -2046,7 +2064,7 @@ form.addEventListener('submit', async e => {
     PROJECTS.unshift({
       id: Date.now(),
       title: name,
-      category, categoryLabel, desc,
+      category, categoryLabel, desc, longDesc,
       author: author.split(' ')[0].toLowerCase(),
       authorLabel: author,
       collaborators: modalColls,
