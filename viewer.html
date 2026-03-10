@@ -38,6 +38,14 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; }
 
+/* ─── PAGE ENTER ANIMATION ─────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.viewer-bar  { animation: fadeInUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+.viewer-body { animation: fadeInUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.07s both; }
+
 body {
   display: flex;
   flex-direction: column;
