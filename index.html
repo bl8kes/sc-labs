@@ -281,7 +281,7 @@ nav {
 .tab {
   font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--text-sec);
@@ -515,6 +515,10 @@ select.filter-select:hover {
   color: var(--text-sec);
   line-height: 1.55;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-footer {
@@ -788,10 +792,12 @@ footer {
   background: var(--surface);
   border: 1px solid var(--border2);
   width: 100%;
-  max-width: 560px;
+  min-width: 800px;
+  max-width: 860px;
   max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
   box-shadow: var(--shadow);
 }
 
@@ -827,7 +833,8 @@ footer {
 }
 .modal-close:hover { color: var(--text); border-color: var(--border2); }
 
-.modal-body { padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+#submitForm { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.modal-body { padding: 28px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; flex: 1; }
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 
@@ -869,6 +876,8 @@ footer {
   align-items: center;
   gap: 10px;
   border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface);
 }
 .btn-delete {
   font-family: 'Inter', sans-serif;
@@ -1168,7 +1177,7 @@ footer {
   </a>
 
   <ul class="nav-links">
-    <li><a href="#" id="navDirectory" class="active" onclick="showSection('directory');return false;">Directory</a></li>
+    <li><a href="#" id="navDirectory" class="active" onclick="showSection('directory');return false;">Projects</a></li>
     <li><a href="#" id="navWorkflow" onclick="showSection('workflow');return false;">Workflow</a></li>
     <li><a href="#">Guidelines</a></li>
     <li><a href="#">Team</a></li>
@@ -1335,6 +1344,17 @@ footer {
         </div>
 
         <div class="field">
+          <div class="desc-label-row">
+            <label class="field-label" for="f-longdesc">Description <span class="field-optional">— shown on card and in project drawer</span></label>
+            <button type="button" class="btn-generate" id="generateDescBtn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+              Generate with AI
+            </button>
+          </div>
+          <textarea id="f-longdesc" placeholder="Goals, context, how it works, open questions, next steps…" rows="5"></textarea>
+        </div>
+
+        <div class="field">
           <label class="field-label" for="f-category">Category <span class="field-required">*</span></label>
           <select id="f-category">
             <option value="">— Select a category —</option>
@@ -1346,22 +1366,6 @@ footer {
             <option value="core">Core</option>
           </select>
           <span class="field-hint"></span>
-        </div>
-
-        <div class="field">
-          <div class="desc-label-row">
-            <label class="field-label" for="f-desc">Short Description <span class="field-optional">— shown on card</span></label>
-            <button type="button" class="btn-generate" id="generateDescBtn">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-              Generate with AI
-            </button>
-          </div>
-          <textarea id="f-desc" placeholder="1–2 sentence summary…" rows="2"></textarea>
-        </div>
-
-        <div class="field">
-          <label class="field-label" for="f-longdesc">Full Description <span class="field-optional">— shown in project drawer</span></label>
-          <textarea id="f-longdesc" placeholder="Goals, context, how it works, open questions, next steps…" rows="5"></textarea>
         </div>
 
         <div class="field">
@@ -1416,7 +1420,7 @@ footer {
 const SEED_PROJECTS = [
   {
     id: 1,
-    title: "Sonic Match",
+    title: "Sample Prototype",
     category: "ai",
     categoryLabel: "AI",
     desc: "ML-powered track similarity engine that surfaces contextually related content based on audio features and listening behaviour.",
@@ -1429,12 +1433,12 @@ const SEED_PROJECTS = [
     tags: ["ML", "Audio", "Recommendation"],
     thumb: null,
     thumbCode: "SM",
-    thumbColor: "#FF5500",
+    thumbColor: "#9CA3AF",
     link: "https://example.com"
   },
   {
     id: 2,
-    title: "Wave Canvas",
+    title: "Sample Prototype",
     category: "creator",
     categoryLabel: "Creator",
     desc: "Interactive waveform editor for artists — annotate, loop, and highlight key moments directly in the track timeline.",
@@ -1447,11 +1451,11 @@ const SEED_PROJECTS = [
     tags: ["Waveform", "Editor", "Canvas"],
     thumb: null,
     thumbCode: "WC",
-    thumbColor: "#7B4FFF"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 3,
-    title: "Feed Rerank",
+    title: "Sample Prototype",
     category: "discovery",
     categoryLabel: "Discovery",
     desc: "Real-time personalised feed reranking using implicit signals — plays, skips, replays — to improve stream relevance.",
@@ -1464,11 +1468,11 @@ const SEED_PROJECTS = [
     tags: ["Feed", "Ranking", "Signals"],
     thumb: null,
     thumbCode: "FR",
-    thumbColor: "#00C9A7"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 4,
-    title: "Mini Player 2",
+    title: "Sample Prototype",
     category: "player",
     categoryLabel: "Player",
     desc: "Redesigned mini player with gesture controls, queue management, and a persistent listening context across page navigation.",
@@ -1481,11 +1485,11 @@ const SEED_PROJECTS = [
     tags: ["Player", "Gestures", "UX"],
     thumb: null,
     thumbCode: "MP",
-    thumbColor: "#FF3366"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 5,
-    title: "Creator Pulse",
+    title: "Sample Prototype",
     category: "creator",
     categoryLabel: "Creator",
     desc: "Real-time analytics dashboard for artists — streaming metrics, audience geography, and track performance heatmaps.",
@@ -1498,11 +1502,11 @@ const SEED_PROJECTS = [
     tags: ["Analytics", "Dashboard"],
     thumb: null,
     thumbCode: "CP",
-    thumbColor: "#FFB800"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 6,
-    title: "Mood Radio",
+    title: "Sample Prototype",
     category: "ai",
     categoryLabel: "AI",
     desc: "Generative radio stations built around emotional context — input a mood or moment and get a curated, evolving stream.",
@@ -1515,11 +1519,11 @@ const SEED_PROJECTS = [
     tags: ["Generative", "Radio", "LLM"],
     thumb: null,
     thumbCode: "MR",
-    thumbColor: "#FF5500"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 7,
-    title: "Tip Jar",
+    title: "Sample Prototype",
     category: "monetization",
     categoryLabel: "Monetization",
     desc: "Frictionless in-stream micro-tipping flow for fans to support artists — no sign-up required for casual listeners.",
@@ -1532,11 +1536,11 @@ const SEED_PROJECTS = [
     tags: ["Payments", "Monetization"],
     thumb: null,
     thumbCode: "TJ",
-    thumbColor: "#00C9A7"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 8,
-    title: "Onboard Flow v3",
+    title: "Sample Prototype",
     category: "growth",
     categoryLabel: "Growth",
     desc: "Rethought onboarding with genre taste-mapping, artist-first seeding, and a single-session activation loop.",
@@ -1549,11 +1553,11 @@ const SEED_PROJECTS = [
     tags: ["Onboarding", "Activation"],
     thumb: null,
     thumbCode: "OF",
-    thumbColor: "#7B4FFF"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 9,
-    title: "Caption Gen",
+    title: "Sample Prototype",
     category: "ai",
     categoryLabel: "AI",
     desc: "Auto-generated track descriptions and social captions using audio analysis and artist metadata — one click, ready to post.",
@@ -1566,11 +1570,11 @@ const SEED_PROJECTS = [
     tags: ["Generative", "Captions", "NLP"],
     thumb: null,
     thumbCode: "CG",
-    thumbColor: "#FF3366"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 10,
-    title: "Social Layer",
+    title: "Sample Prototype",
     category: "discovery",
     categoryLabel: "Discovery",
     desc: "Friend activity feed and collaborative playlisting — see what your network is playing and add to shared queues in real time.",
@@ -1583,11 +1587,11 @@ const SEED_PROJECTS = [
     tags: ["Social", "Feed", "Playlists"],
     thumb: null,
     thumbCode: "SL",
-    thumbColor: "#FFB800"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 11,
-    title: "Stem Split",
+    title: "Sample Prototype",
     category: "creator",
     categoryLabel: "Creator",
     desc: "Browser-based stem separation tool — upload any track and isolate vocals, drums, bass, and melody for remix or sampling.",
@@ -1600,11 +1604,11 @@ const SEED_PROJECTS = [
     tags: ["Audio", "ML", "Remix"],
     thumb: null,
     thumbCode: "SS",
-    thumbColor: "#FF5500"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 12,
-    title: "Sub Perks",
+    title: "Sample Prototype",
     category: "monetization",
     categoryLabel: "Monetization",
     desc: "Premium subscriber perk system — exclusive early listens, behind-the-scenes content, and direct artist interactions.",
@@ -1617,11 +1621,11 @@ const SEED_PROJECTS = [
     tags: ["Subscription", "Perks"],
     thumb: null,
     thumbCode: "SP",
-    thumbColor: "#7B4FFF"
+    thumbColor: "#9CA3AF"
   },
   {
     id: 13,
-    title: "SC Design Flow",
+    title: "Sample Prototype",
     category: "workflow",
     categoryLabel: "Workflow",
     desc: "Internal design workflow tool — a living reference for SC's design system, component library, and team process documentation.",
@@ -1634,7 +1638,7 @@ const SEED_PROJECTS = [
     tags: ["Design System", "Workflow", "Components"],
     thumb: null,
     thumbCode: "DF",
-    thumbColor: "#FF5500",
+    thumbColor: "#9CA3AF",
     link: "https://sc-design-flow.vercel.app/",
     addedAt: "2026-03-09T00:00:00.000Z"
   }
@@ -1709,7 +1713,7 @@ function filtered() {
     const q = searchQuery.toLowerCase();
     list = list.filter(p =>
       p.title.toLowerCase().includes(q) ||
-      (p.desc || '').toLowerCase().includes(q) ||
+      (p.longDesc || p.desc || '').toLowerCase().includes(q) ||
       p.categoryLabel.toLowerCase().includes(q) ||
       p.authorLabel.toLowerCase().includes(q) ||
       (p.tags || []).some(t => t.toLowerCase().includes(q))
@@ -1774,7 +1778,7 @@ function cardHTML(p) {
       <div class="card-body">
         <div class="card-category">${p.categoryLabel}</div>
         <div class="card-title">${p.title}</div>
-        <div class="card-desc">${p.desc || '<span style="color:var(--text-ter);font-style:italic">No description</span>'}</div>
+        <div class="card-desc">${p.longDesc || p.desc || '<span style="color:var(--text-ter);font-style:italic">No description</span>'}</div>
         ${tagsHTML}
         <div class="card-footer">
           <div class="card-author">
@@ -1952,6 +1956,46 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 // ── Init ───────────────────────────────────────────────────────────────────
 render();
 
+// ── Background thumbnail refresh ───────────────────────────────────────────
+// For each project with a URL, probe the mshots screenshot service with a
+// cache-busting timestamp so it queues a fresh capture. If the image loads
+// successfully (different from the current stored URL), update and save.
+(function refreshThumbnails() {
+  const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
+  const now = Date.now();
+  let changed = false;
+
+  PROJECTS.forEach(p => {
+    if (!p.link) return;
+    // Skip data: URLs — those are user-uploaded custom images
+    if (p.thumb && p.thumb.startsWith('data:')) return;
+    // Only re-fetch if we haven't checked within the interval
+    const lastCheck = p.thumbCheckedAt ? new Date(p.thumbCheckedAt).getTime() : 0;
+    if (now - lastCheck < REFRESH_INTERVAL_MS) return;
+
+    const freshUrl = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(p.link)}?w=600&h=400&ts=${now}`;
+    const img = new Image();
+    img.onload = () => {
+      p.thumb = freshUrl;
+      p.thumbCheckedAt = new Date(now).toISOString();
+      saveProjects();
+      // Re-render the card in place if the DOM element exists
+      const cardEl = document.querySelector(`[data-id="${p.id}"]`);
+      if (cardEl) {
+        const imgEl = cardEl.querySelector('.card-thumb img, .list-thumb img');
+        if (imgEl) { imgEl.src = freshUrl; imgEl.classList.remove('loaded'); imgEl.onload = () => imgEl.classList.add('loaded'); }
+      }
+    };
+    img.onerror = () => {
+      // mshots always returns an image; update check time so we don't retry for 24h
+      p.thumbCheckedAt = new Date(now).toISOString();
+      changed = true;
+      saveProjects();
+    };
+    img.src = freshUrl;
+  });
+})();
+
 // ── Submit / Edit modal ──────────────────────────────────────────────────
 const modal   = document.getElementById('submitModal');
 const form    = document.getElementById('submitForm');
@@ -1960,9 +2004,9 @@ const success = document.getElementById('submitSuccess');
 // Optional: add your Anthropic API key to enable AI description generation
 const CLAUDE_API_KEY = '';
 
-let modalTags  = [];
-let modalColls = [];
-let editingId  = null;   // null = new project, number = editing existing
+let modalTags   = [];
+let modalColls  = [];
+let editingId   = null;   // null = new project, number = editing existing
 
 const CATEGORY_LABELS = {
   upload: 'Upload',
@@ -1991,7 +2035,6 @@ function openModal(projectId = null) {
 
   const titleEl  = document.getElementById('modalTitle');
   const submitEl = document.getElementById('submitBtn');
-
   const deleteEl = document.getElementById('deleteBtn');
 
   if (projectId !== null) {
@@ -2004,8 +2047,7 @@ function openModal(projectId = null) {
     document.getElementById('f-name').value     = p.title;
     document.getElementById('f-link').value     = p.link || '';
     document.getElementById('f-category').value = p.category || '';
-    document.getElementById('f-desc').value     = p.desc || '';
-    document.getElementById('f-longdesc').value = p.longDesc || '';
+    document.getElementById('f-longdesc').value = p.longDesc || p.desc || '';
     document.getElementById('f-author').value   = p.authorLabel;
     modalTags  = [...(p.tags || [])];
     modalColls = [...(p.collaborators || [])];
@@ -2076,7 +2118,7 @@ document.getElementById('generateDescBtn').addEventListener('click', async () =>
   const title    = document.getElementById('f-name').value.trim();
   const category = document.getElementById('f-category').value;
   const btn      = document.getElementById('generateDescBtn');
-  const textarea = document.getElementById('f-desc');
+  const textarea = document.getElementById('f-longdesc');
   if (!title) { document.getElementById('f-name').focus(); return; }
   btn.disabled = true;
   btn.textContent = 'Generating…';
@@ -2170,8 +2212,7 @@ form.addEventListener('submit', async e => {
   const name     = document.getElementById('f-name').value.trim();
   const link     = document.getElementById('f-link').value.trim();
   const category = document.getElementById('f-category').value;
-  let   desc     = document.getElementById('f-desc').value.trim();
-  const longDesc = document.getElementById('f-longdesc').value.trim();
+  let   longDesc = document.getElementById('f-longdesc').value.trim();
   const author   = document.getElementById('f-author').value.trim();
 
   let valid = true;
@@ -2186,11 +2227,11 @@ form.addEventListener('submit', async e => {
   if (!valid) return;
 
   // Auto-generate description if blank
-  if (!desc) {
+  if (!longDesc) {
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = 'Generating…';
-    try { desc = await generateDesc(name, category, modalTags.join(', ')); } catch(e) {}
+    try { longDesc = await generateDesc(name, category, modalTags.join(', ')); } catch(e) {}
     btn.disabled = false;
     btn.textContent = editingId !== null ? 'Save Changes' : 'Submit Project';
   }
@@ -2202,7 +2243,7 @@ form.addEventListener('submit', async e => {
     const idx = PROJECTS.findIndex(x => x.id === editingId);
     if (idx !== -1) {
       Object.assign(PROJECTS[idx], {
-        title: name, link, category, categoryLabel, desc, longDesc,
+        title: name, link, category, categoryLabel, desc: longDesc, longDesc,
         author: author.split(' ')[0].toLowerCase(),
         authorLabel: author,
         tags: modalTags,
@@ -2218,13 +2259,12 @@ form.addEventListener('submit', async e => {
     const colors   = ['#FF5500','#7B4FFF','#00C9A7','#FF3366','#FFB800'];
     const color    = colors[PROJECTS.length % colors.length];
     const code     = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    // Auto-generate thumbnail from URL via screenshot service
     const thumb    = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(link)}?w=600&h=400`;
 
     PROJECTS.unshift({
       id: Date.now(),
       title: name,
-      category, categoryLabel, desc, longDesc,
+      category, categoryLabel, desc: longDesc, longDesc,
       author: author.split(' ')[0].toLowerCase(),
       authorLabel: author,
       collaborators: modalColls,
