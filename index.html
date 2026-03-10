@@ -1142,6 +1142,155 @@ footer {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
+/* ─── GUIDELINES ───────────────────────────────────────────────────────── */
+.gl-wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 72px 48px 100px;
+}
+
+.gl-hero {
+  margin-bottom: 72px;
+}
+
+.gl-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 16px;
+}
+
+.gl-title {
+  font-size: clamp(48px, 8vw, 88px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -3px;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 28px;
+}
+
+.gl-intro {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-sec);
+  max-width: 640px;
+}
+
+.gl-section {
+  margin-bottom: 64px;
+}
+
+.gl-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-ter);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* What belongs here cards */
+.gl-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.gl-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gl-card-icon {
+  color: var(--orange);
+  margin-bottom: 4px;
+}
+
+.gl-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.gl-card-desc {
+  font-size: 13px;
+  color: var(--text-sec);
+  line-height: 1.65;
+}
+
+/* Steps */
+.gl-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.gl-step {
+  display: flex;
+  gap: 28px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.gl-step:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.gl-step-num {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--orange);
+  flex-shrink: 0;
+  width: 28px;
+  padding-top: 2px;
+}
+
+.gl-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gl-step-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.gl-step-desc {
+  font-size: 13px;
+  color: var(--text-sec);
+  line-height: 1.7;
+}
+
+/* Note */
+.gl-section-note {
+  margin-bottom: 0;
+}
+
+.gl-note {
+  font-size: 12px;
+  color: var(--text-ter);
+  line-height: 1.7;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 20px;
+  background: var(--surface);
+}
+
 /* ─── RESPONSIVE ───────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   nav { padding: 0 24px; }
@@ -1179,8 +1328,7 @@ footer {
   <ul class="nav-links">
     <li><a href="#" id="navDirectory" class="active" onclick="showSection('directory');return false;">Projects</a></li>
     <li><a href="#" id="navWorkflow" onclick="showSection('workflow');return false;">Workflow</a></li>
-    <li><a href="#">Guidelines</a></li>
-    <li><a href="#">Team</a></li>
+    <li><a href="#" id="navGuidelines" onclick="showSection('guidelines');return false;">Guidelines</a></li>
   </ul>
 
   <div class="nav-search">
@@ -1307,6 +1455,89 @@ footer {
 <!-- ─── WORKFLOW SECTION ───────────────────────────────────────────────── -->
 <div id="workflowSection" style="display:none;position:fixed;top:60px;left:0;right:0;bottom:0;z-index:10;">
   <iframe id="workflowFrame" src="" style="width:100%;height:100%;border:none;display:block;" allow="fullscreen"></iframe>
+</div>
+
+<!-- ─── GUIDELINES SECTION ────────────────────────────────────────────────── -->
+<div id="guidelinesSection" style="display:none;">
+  <div class="gl-wrap">
+    <div class="gl-hero">
+      <div class="gl-eyebrow">SC Labs</div>
+      <h1 class="gl-title">Guidelines</h1>
+      <p class="gl-intro">SC Labs is a shared space for anyone at SoundCloud — Designers, Engineers, Product Managers, or anyone else — to publish and share prototypes they've created. Whether it's an early concept, a polished flow, or a quick experiment, this is the place to put it in front of the team.</p>
+    </div>
+
+    <div class="gl-section">
+      <div class="gl-section-label">What belongs here</div>
+      <div class="gl-cards">
+        <div class="gl-card">
+          <div class="gl-card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
+          </div>
+          <div class="gl-card-title">Early concepts</div>
+          <div class="gl-card-desc">Rough ideas, explorations, or lo-fi flows you want feedback on before investing more time.</div>
+        </div>
+        <div class="gl-card">
+          <div class="gl-card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="gl-card-title">Interactive prototypes</div>
+          <div class="gl-card-desc">Figma links, coded prototypes, or hosted demos that show a feature in motion.</div>
+        </div>
+        <div class="gl-card">
+          <div class="gl-card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="gl-card-title">Works in progress</div>
+          <div class="gl-card-desc">Things still being built. Use the "In Progress" status so others know it's evolving.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gl-section">
+      <div class="gl-section-label">How to get started</div>
+      <div class="gl-steps">
+        <div class="gl-step">
+          <div class="gl-step-num">01</div>
+          <div class="gl-step-body">
+            <div class="gl-step-title">Host your prototype</div>
+            <div class="gl-step-desc">Your prototype needs a public URL. Common options include Vercel, Netlify, GitHub Pages, or a Figma share link. If it's already live somewhere, you're good to go.</div>
+          </div>
+        </div>
+        <div class="gl-step">
+          <div class="gl-step-num">02</div>
+          <div class="gl-step-body">
+            <div class="gl-step-title">Click "Submit" in the top navigation</div>
+            <div class="gl-step-desc">Hit the orange Submit button in the top-right corner of any page. A form will appear asking for your project title, URL, category, status, and a short description.</div>
+          </div>
+        </div>
+        <div class="gl-step">
+          <div class="gl-step-num">03</div>
+          <div class="gl-step-body">
+            <div class="gl-step-title">Fill in the details</div>
+            <div class="gl-step-desc">Add a clear title, paste your URL, pick a category that best fits your team (Design, Engineering, Product, etc.), and write a one-liner about what the prototype is exploring. Tags are optional but help with filtering.</div>
+          </div>
+        </div>
+        <div class="gl-step">
+          <div class="gl-step-num">04</div>
+          <div class="gl-step-body">
+            <div class="gl-step-title">Submit and share</div>
+            <div class="gl-step-desc">Once submitted, your project will appear in the directory immediately. Share the link with your team or drop it in a relevant Slack channel to get feedback.</div>
+          </div>
+        </div>
+        <div class="gl-step">
+          <div class="gl-step-num">05</div>
+          <div class="gl-step-body">
+            <div class="gl-step-title">Keep it updated</div>
+            <div class="gl-step-desc">Use the edit button inside the viewer to update your status as the project moves from "In Progress" to "In Review" or "Shipped". This keeps the directory accurate for everyone.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gl-section gl-section-note">
+      <div class="gl-note">Projects are stored locally in your browser. For now, this is an internal tool — keep links and descriptions appropriate for a team audience.</div>
+    </div>
+  </div>
 </div>
 
 <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
@@ -1915,29 +2146,39 @@ document.getElementById('viewList').addEventListener('click', () => {
   document.getElementById('viewGrid').classList.remove('active');
 });
 
-// ── Section switcher (Directory / Workflow) ────────────────────────────────
+// ── Section switcher ──────────────────────────────────────────────────────
 function showSection(section) {
-  const pageWrap = document.querySelector('.page-wrap');
-  const footer   = document.querySelector('footer');
-  const workflowSection = document.getElementById('workflowSection');
-  const workflowFrame   = document.getElementById('workflowFrame');
-  const navDirectory = document.getElementById('navDirectory');
-  const navWorkflow  = document.getElementById('navWorkflow');
+  const pageWrap         = document.querySelector('.page-wrap');
+  const footer           = document.querySelector('footer');
+  const workflowSection  = document.getElementById('workflowSection');
+  const workflowFrame    = document.getElementById('workflowFrame');
+  const guidelinesSection = document.getElementById('guidelinesSection');
+  const navDirectory     = document.getElementById('navDirectory');
+  const navWorkflow      = document.getElementById('navWorkflow');
+  const navGuidelines    = document.getElementById('navGuidelines');
+
+  // Hide everything first
+  pageWrap.style.display          = 'none';
+  footer.style.display            = 'none';
+  workflowSection.style.display   = 'none';
+  guidelinesSection.style.display = 'none';
+  navDirectory.classList.remove('active');
+  navWorkflow.classList.remove('active');
+  navGuidelines.classList.remove('active');
 
   if (section === 'workflow') {
-    pageWrap.style.display = 'none';
-    footer.style.display   = 'none';
     workflowSection.style.display = 'block';
     if (!workflowFrame.src || workflowFrame.src === window.location.href) {
       workflowFrame.src = 'https://sc-design-flow.vercel.app/';
     }
-    navDirectory.classList.remove('active');
     navWorkflow.classList.add('active');
+  } else if (section === 'guidelines') {
+    guidelinesSection.style.display = 'block';
+    footer.style.display = '';
+    navGuidelines.classList.add('active');
   } else {
     pageWrap.style.display = '';
     footer.style.display   = '';
-    workflowSection.style.display = 'none';
-    navWorkflow.classList.remove('active');
     navDirectory.classList.add('active');
   }
 }
