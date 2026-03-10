@@ -6,7 +6,7 @@
 <title>SC Labs — SoundCloud Prototype Directory</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
 
 /* ─── TOKENS ───────────────────────────────────────────────────────────── */
@@ -1142,89 +1142,114 @@ footer {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
-/* ─── GUIDELINES ───────────────────────────────────────────────────────── */
+/* ─── ABOUT ─────────────────────────────────────────────────────────────── */
+#aboutSection {
+  background: var(--bg);
+  min-height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
 .gl-wrap {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 72px 48px 100px;
+  padding: 0 48px 120px;
 }
 
 .gl-hero {
-  margin-bottom: 72px;
+  padding: 120px 0 80px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
 }
 
 .gl-eyebrow {
+  font-family: 'Barlow', sans-serif;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--orange);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .gl-title {
-  font-size: clamp(48px, 8vw, 88px);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(72px, 12vw, 160px);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -3px;
+  letter-spacing: -2px;
   line-height: 1;
   color: var(--text);
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 .gl-intro {
-  font-size: 16px;
-  line-height: 1.75;
+  font-family: 'Barlow', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.7;
   color: var(--text-sec);
-  max-width: 640px;
+  max-width: 720px;
 }
 
 .gl-section {
-  margin-bottom: 64px;
+  padding: 80px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.gl-section:last-child {
+  border-bottom: none;
 }
 
 .gl-section-label {
-  font-size: 10px;
-  font-weight: 700;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--text-ter);
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  color: var(--text-sec);
+  margin-bottom: 48px;
 }
 
 /* What belongs here cards */
 .gl-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
 }
 
 .gl-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 24px 20px;
+  background: var(--bg);
+  padding: 40px 36px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
+  transition: background 0.2s;
+}
+
+.gl-card:hover {
+  background: var(--surface);
 }
 
 .gl-card-icon {
   color: var(--orange);
-  margin-bottom: 4px;
 }
 
 .gl-card-title {
-  font-size: 13px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   color: var(--text);
-  letter-spacing: -0.2px;
+  line-height: 1.1;
 }
 
 .gl-card-desc {
-  font-size: 13px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
   color: var(--text-sec);
   line-height: 1.65;
 }
@@ -1233,14 +1258,14 @@ footer {
 .gl-steps {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .gl-step {
   display: flex;
-  gap: 28px;
-  padding: 28px 0;
+  gap: 48px;
+  padding: 40px 0;
   border-bottom: 1px solid var(--border);
+  align-items: flex-start;
 }
 
 .gl-step:first-child {
@@ -1248,48 +1273,405 @@ footer {
 }
 
 .gl-step-num {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
   color: var(--orange);
   flex-shrink: 0;
-  width: 28px;
-  padding-top: 2px;
+  width: 32px;
+  padding-top: 4px;
 }
 
 .gl-step-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  flex: 1;
 }
 
 .gl-step-title {
-  font-size: 14px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   color: var(--text);
-  letter-spacing: -0.2px;
+  line-height: 1;
 }
 
 .gl-step-desc {
-  font-size: 13px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
   color: var(--text-sec);
   line-height: 1.7;
+  max-width: 580px;
 }
 
 /* Note */
 .gl-section-note {
-  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .gl-note {
-  font-size: 12px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--text-ter);
   line-height: 1.7;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 16px 20px;
+  padding: 24px 28px;
   background: var(--surface);
 }
+
+/* ─── RESOURCES ─────────────────────────────────────────────────────────── */
+#resourcesSection {
+  min-height: calc(100vh - 60px);
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.res-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px 120px;
+}
+
+.res-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 120px 0 80px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+
+.res-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.res-eyebrow {
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 20px;
+}
+
+.res-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(72px, 12vw, 160px);
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 32px;
+}
+
+.res-desc {
+  font-family: 'Barlow', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-sec);
+  line-height: 1.7;
+  max-width: 720px;
+}
+
+.res-table-section {
+  padding: 80px 0;
+}
+
+.res-section-label {
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  margin-bottom: 32px;
+}
+
+.res-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+.res-add-btn:hover { opacity: 0.85; }
+
+/* Table */
+.res-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.res-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+}
+
+.res-table thead tr {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.res-table th {
+  padding: 12px 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-ter);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.res-table th:last-child {
+  width: 48px;
+  text-align: center;
+}
+
+.res-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.res-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.res-table tbody tr:hover {
+  background: var(--surface);
+}
+
+.res-table td {
+  padding: 16px 20px;
+  font-size: 13px;
+  color: var(--text-sec);
+  vertical-align: middle;
+  line-height: 1.5;
+}
+
+.res-table td:first-child {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.res-name-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+.res-name-link:hover { color: var(--orange); }
+
+.res-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  color: var(--text-ter);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+.res-link-btn:hover {
+  color: var(--orange);
+  background: var(--orange-dim);
+}
+
+.res-owner {
+  font-size: 12px;
+  color: var(--text-ter);
+}
+
+.res-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-ter);
+  font-size: 11px;
+  padding: 4px 0;
+  display: none;
+  transition: color 0.15s;
+}
+.res-table tbody tr:hover .res-delete-btn { display: inline; }
+.res-delete-btn:hover { color: #e05; }
+
+.res-td-actions {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.res-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 64px 32px;
+  color: var(--text-ter);
+  font-size: 13px;
+  background: var(--bg);
+}
+
+/* Add Resource Modal — matches project modal style */
+.res-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.res-backdrop.open { display: flex; }
+
+.res-modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  width: 100%;
+  min-width: 800px;
+  max-width: 860px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.res-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.res-modal-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+
+.res-modal-close {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--border); cursor: pointer;
+  color: var(--text-sec); border-radius: 4px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.res-modal-close:hover { color: var(--text); border-color: var(--border2); }
+
+.res-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.res-field { display: flex; flex-direction: column; gap: 6px; }
+
+.res-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-sec);
+}
+
+.res-input, .res-textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.res-input:focus, .res-textarea:focus { border-color: var(--orange); }
+.res-input::placeholder, .res-textarea::placeholder { color: var(--text-ter); }
+.res-textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
+
+.res-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px 28px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.res-btn-cancel {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: none;
+  color: var(--text-sec);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.res-btn-cancel:hover { color: var(--text); border-color: var(--border2); }
+
+.res-btn-save {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--orange);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.res-btn-save:hover { opacity: 0.85; }
 
 /* ─── RESPONSIVE ───────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
@@ -1328,7 +1710,8 @@ footer {
   <ul class="nav-links">
     <li><a href="#" id="navDirectory" class="active" onclick="showSection('directory');return false;">Projects</a></li>
     <li><a href="#" id="navWorkflow" onclick="showSection('workflow');return false;">Workflow</a></li>
-    <li><a href="#" id="navGuidelines" onclick="showSection('guidelines');return false;">Guidelines</a></li>
+    <li><a href="#" id="navResources" onclick="showSection('resources');return false;">Resources</a></li>
+    <li><a href="#" id="navAbout" onclick="showSection('about');return false;">About</a></li>
   </ul>
 
   <div class="nav-search">
@@ -1457,12 +1840,12 @@ footer {
   <iframe id="workflowFrame" src="" style="width:100%;height:100%;border:none;display:block;" allow="fullscreen"></iframe>
 </div>
 
-<!-- ─── GUIDELINES SECTION ────────────────────────────────────────────────── -->
-<div id="guidelinesSection" style="display:none;">
+<!-- ─── ABOUT SECTION ─────────────────────────────────────────────────────── -->
+<div id="aboutSection" style="display:none;">
   <div class="gl-wrap">
     <div class="gl-hero">
       <div class="gl-eyebrow">SC Labs</div>
-      <h1 class="gl-title">Guidelines</h1>
+      <h1 class="gl-title">About</h1>
       <p class="gl-intro">SC Labs is a shared space for anyone at SoundCloud — Designers, Engineers, Product Managers, or anyone else — to publish and share prototypes they've created. Whether it's an early concept, a polished flow, or a quick experiment, this is the place to put it in front of the team.</p>
     </div>
 
@@ -1536,6 +1919,83 @@ footer {
 
     <div class="gl-section gl-section-note">
       <div class="gl-note">Projects are stored locally in your browser. For now, this is an internal tool — keep links and descriptions appropriate for a team audience.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── RESOURCES SECTION ────────────────────────────────────────────────── -->
+<div id="resourcesSection" style="display:none;">
+  <div class="res-wrap">
+
+    <div class="res-header">
+      <div class="res-header-left">
+        <div class="res-eyebrow">SC Labs</div>
+        <h1 class="res-title">Resources</h1>
+        <p class="res-desc">Useful tools, docs, and links for the team. Add anything worth sharing.</p>
+      </div>
+      <button class="res-add-btn" id="addResourceBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Resource
+      </button>
+    </div>
+
+    <div class="res-table-section">
+      <div class="res-section-label">Directory</div>
+      <div class="res-table-wrap">
+        <table class="res-table" id="resourcesTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Owner</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="resourcesTbody">
+          </tbody>
+        </table>
+        <div class="res-empty" id="resourcesEmpty" style="display:none;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>No resources yet. Add the first one.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── ADD RESOURCE MODAL ────────────────────────────────────────────────── -->
+<div class="res-backdrop" id="resBackdrop">
+  <div class="res-modal">
+    <div class="res-modal-header">
+      <span class="res-modal-title">Add Resource</span>
+      <button class="res-modal-close" id="resModalClose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="res-modal-body">
+      <div class="field-row">
+        <div class="res-field">
+          <label class="res-label">Name <span class="field-required">*</span></label>
+          <input class="res-input" id="resName" type="text" placeholder="e.g. Figma Design System">
+        </div>
+        <div class="res-field">
+          <label class="res-label">Owner</label>
+          <input class="res-input" id="resOwner" type="text" placeholder="e.g. Design Systems team">
+        </div>
+      </div>
+      <div class="res-field">
+        <label class="res-label">URL <span class="field-required">*</span></label>
+        <input class="res-input" id="resUrl" type="url" placeholder="https://…">
+      </div>
+      <div class="res-field">
+        <label class="res-label">Description</label>
+        <textarea class="res-textarea" id="resDesc" rows="3" placeholder="What is this and when should someone use it?"></textarea>
+      </div>
+    </div>
+    <div class="res-modal-footer">
+      <button class="res-btn-cancel" id="resCancel">Cancel</button>
+      <button class="res-btn-save" id="resSave">Add Resource</button>
     </div>
   </div>
 </div>
@@ -2148,40 +2608,133 @@ document.getElementById('viewList').addEventListener('click', () => {
 
 // ── Section switcher ──────────────────────────────────────────────────────
 function showSection(section) {
-  const pageWrap         = document.querySelector('.page-wrap');
-  const footer           = document.querySelector('footer');
-  const workflowSection  = document.getElementById('workflowSection');
-  const workflowFrame    = document.getElementById('workflowFrame');
-  const guidelinesSection = document.getElementById('guidelinesSection');
-  const navDirectory     = document.getElementById('navDirectory');
-  const navWorkflow      = document.getElementById('navWorkflow');
-  const navGuidelines    = document.getElementById('navGuidelines');
+  const pageWrap           = document.querySelector('.page-wrap');
+  const footer             = document.querySelector('footer');
+  const workflowSection    = document.getElementById('workflowSection');
+  const workflowFrame      = document.getElementById('workflowFrame');
+  const aboutSection       = document.getElementById('aboutSection');
+  const resourcesSection   = document.getElementById('resourcesSection');
+  const navDirectory       = document.getElementById('navDirectory');
+  const navWorkflow        = document.getElementById('navWorkflow');
+  const navAbout           = document.getElementById('navAbout');
+  const navResources       = document.getElementById('navResources');
 
-  // Hide everything first
-  pageWrap.style.display          = 'none';
-  footer.style.display            = 'none';
-  workflowSection.style.display   = 'none';
-  guidelinesSection.style.display = 'none';
   navDirectory.classList.remove('active');
   navWorkflow.classList.remove('active');
-  navGuidelines.classList.remove('active');
+  navAbout.classList.remove('active');
+  navResources.classList.remove('active');
 
   if (section === 'workflow') {
-    workflowSection.style.display = 'block';
+    pageWrap.style.display         = 'none';
+    footer.style.display           = 'none';
+    aboutSection.style.display     = 'none';
+    resourcesSection.style.display = 'none';
+    workflowSection.style.display  = 'block';
     if (!workflowFrame.src || workflowFrame.src === window.location.href) {
       workflowFrame.src = 'https://sc-design-flow.vercel.app/';
     }
     navWorkflow.classList.add('active');
-  } else if (section === 'guidelines') {
-    guidelinesSection.style.display = 'block';
-    footer.style.display = '';
-    navGuidelines.classList.add('active');
+  } else if (section === 'about') {
+    pageWrap.style.display         = 'none';
+    footer.style.display           = 'none';
+    workflowSection.style.display  = 'none';
+    resourcesSection.style.display = 'none';
+    aboutSection.style.display     = 'block';
+    navAbout.classList.add('active');
+  } else if (section === 'resources') {
+    pageWrap.style.display         = 'none';
+    footer.style.display           = 'none';
+    workflowSection.style.display  = 'none';
+    aboutSection.style.display     = 'none';
+    resourcesSection.style.display = 'block';
+    navResources.classList.add('active');
+    renderResources();
   } else {
-    pageWrap.style.display = '';
-    footer.style.display   = '';
+    workflowSection.style.display  = 'none';
+    aboutSection.style.display     = 'none';
+    resourcesSection.style.display = 'none';
+    pageWrap.style.display         = '';
+    footer.style.display           = '';
     navDirectory.classList.add('active');
   }
 }
+
+// ── Resources ──────────────────────────────────────────────────────────────
+const RES_KEY = 'sc-labs-resources';
+
+function loadResources() {
+  try { return JSON.parse(localStorage.getItem(RES_KEY)) || []; } catch(e) { return []; }
+}
+function saveResources(list) {
+  try { localStorage.setItem(RES_KEY, JSON.stringify(list)); } catch(e) {}
+}
+
+function renderResources() {
+  const list  = loadResources();
+  const tbody = document.getElementById('resourcesTbody');
+  const empty = document.getElementById('resourcesEmpty');
+  const table = document.getElementById('resourcesTable');
+
+  if (list.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'flex';
+    return;
+  }
+
+  table.style.display = '';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = list.map((r, i) => `
+    <tr>
+      <td><a class="res-name-link" href="${r.url}" target="_blank" rel="noopener">${r.name}</a></td>
+      <td>${r.desc || '<span style="color:var(--text-ter)">—</span>'}</td>
+      <td><span class="res-owner">${r.owner || '<span style="color:var(--text-ter)">—</span>'}</span></td>
+      <td class="res-td-actions">
+        <a class="res-link-btn" href="${r.url}" target="_blank" rel="noopener" title="Open link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        <button class="res-delete-btn" onclick="deleteResource(${i})" title="Delete">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+window.deleteResource = function(i) {
+  const list = loadResources();
+  list.splice(i, 1);
+  saveResources(list);
+  renderResources();
+};
+
+// Modal
+const resBackdrop = document.getElementById('resBackdrop');
+
+function openResModal() {
+  document.getElementById('resName').value  = '';
+  document.getElementById('resUrl').value   = '';
+  document.getElementById('resDesc').value  = '';
+  document.getElementById('resOwner').value = '';
+  resBackdrop.classList.add('open');
+  setTimeout(() => document.getElementById('resName').focus(), 50);
+}
+function closeResModal() { resBackdrop.classList.remove('open'); }
+
+document.getElementById('addResourceBtn').addEventListener('click', openResModal);
+document.getElementById('resModalClose').addEventListener('click', closeResModal);
+document.getElementById('resCancel').addEventListener('click', closeResModal);
+resBackdrop.addEventListener('click', e => { if (e.target === resBackdrop) closeResModal(); });
+
+document.getElementById('resSave').addEventListener('click', () => {
+  const name  = document.getElementById('resName').value.trim();
+  const url   = document.getElementById('resUrl').value.trim();
+  const desc  = document.getElementById('resDesc').value.trim();
+  const owner = document.getElementById('resOwner').value.trim();
+  if (!name || !url) { alert('Name and URL are required.'); return; }
+  const list = loadResources();
+  list.push({ name, url, desc, owner, addedAt: new Date().toISOString() });
+  saveResources(list);
+  closeResModal();
+  renderResources();
+});
 
 // ── Theme toggle ───────────────────────────────────────────────────────────
 const html = document.documentElement;
